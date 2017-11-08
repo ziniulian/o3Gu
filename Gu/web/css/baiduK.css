@@ -1,0 +1,61 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	height: 100%;
+	font-family: "Microsoft YaHei";
+	font-size: 24px;
+	font-size: 2vw;
+	color: #333;
+	background-color: #FF0;
+}
+
+/*取消a链接默认样式*/
+a{
+	text-decoration:none;
+}
+
+select {
+	border: none;
+	outline: medium;
+	font-size: 1rem;
+	background-color: #FF0;
+}
+
+.nam {
+	color: #FF9;
+}
+
+.boso {
+	height: 100%;
+}
+
+.top {
+	position: fixed;
+	width: 100%;
+	line-height: 2;
+	background-color: #FF0;
+}
+
+.body {
+	width: 90%;
+	padding-top: 7%;
+}
+
+table, tbody, tr {
+	width: 100%;
+}
+
+tr {
+	line-height: 1.5;
+	text-align: right;
+}
+
+tr:hover {
+	background-color: #FF6;
+}
+
+.v {
+	position: absolute;
+	top: 0;
+	right: 0;
+}

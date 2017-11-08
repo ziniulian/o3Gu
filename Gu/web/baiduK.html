@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>BaiduK</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8" />
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="js/baiduK.js"></script>
+		<link rel="stylesheet" href="css/baiduK.css">
+	</head>
+
+	<body>
+		<div class="boso">
+			<div class="top">
+				<select id="typ" onchange="qry();">
+					<option value="D">D</option>
+					<option value="M">M</option>
+					<option value="Y">Y</option>
+					<option value="5">5</option>
+				</select>
+				<select id="cod" class="nam" onchange="qry();">
+					<option value="600000">浦发银行</option>
+					<option value="601006">大秦铁路</option>
+					<option value="600660">福耀玻璃</option>
+					<option value="000158">常山北明</option>
+					<option value="601088">中国神华</option>
+					<option value="000661">长春高新</option>
+					<option value="601601">中国太保</option>
+				</select>
+				<a href="javascript: qry();">R</a>
+				<div class="v" id="total">555</div>
+			</div>
+			<div class="body"><table><tbody id="tb"></tbody></table></div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>
+

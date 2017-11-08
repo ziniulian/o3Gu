@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>国债逆回购收益对比表</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8" />
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="js/rongzi.js"></script>
+		<link rel="stylesheet" href="css/rongzi.css">
+	</head>
+
+	<body>
+		<div class = "boso">
+			<div class = "btn" onclick = "window.location.reload();">刷 新</div>
+			<a href="/"><div class = "logo"></div></a>
+
+			<div class = "tim" id = "tim"></div>
+			<div class = "title">
+				<div class = "box k">天数</div><!--
+				 --><div class = "box d">天</div><!--
+				 --><div class = "box c">代码</div><!--
+				 --><div class = "box y">
+					<div>年化</div>
+					<div class = "unit">（百元）</div>
+				</div><!--
+				 --><div class = "box r">
+					<div>日均</div>
+					<div class = "unit">（万元）</div>
+				</div>
+			</div>
+
+			<div class = "divide"> ---- 深证 ---- </div>
+
+			<div class = "item">
+				<div class = "box k" id = "sz1k">1</div><!--
+				 --><div class = "box d" id = "sz1d"></div><!--
+				 --><div class = "box c" id = "sz1c"></div><!--
+				 --><div class = "box y" id = "sz1y"></div><!--
+				 --><div class = "box r" id = "sz1r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sz2k">2</div><!--
+				 --><div class = "box d" id = "sz2d"></div><!--
+				 --><div class = "box c" id = "sz2c"></div><!--
+				 --><div class = "box y" id = "sz2y"></div><!--
+				 --><div class = "box r" id = "sz2r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sz3k">3</div><!--
+				 --><div class = "box d" id = "sz3d"></div><!--
+				 --><div class = "box c" id = "sz3c"></div><!--
+				 --><div class = "box y" id = "sz3y"></div><!--
+				 --><div class = "box r" id = "sz3r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sz4k">4</div><!--
+				 --><div class = "box d" id = "sz4d"></div><!--
+				 --><div class = "box c" id = "sz4c"></div><!--
+				 --><div class = "box y" id = "sz4y"></div><!--
+				 --><div class = "box r" id = "sz4r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sz7k">7</div><!--
+				 --><div class = "box d" id = "sz7d"></div><!--
+				 --><div class = "box c" id = "sz7c"></div><!--
+				 --><div class = "box y" id = "sz7y"></div><!--
+				 --><div class = "box r" id = "sz7r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sz14k">14</div><!--
+				 --><div class = "box d" id = "sz14d"></div><!--
+				 --><div class = "box c" id = "sz14c"></div><!--
+				 --><div class = "box y" id = "sz14y"></div><!--
+				 --><div class = "box r" id = "sz14r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sz28k">28</div><!--
+				 --><div class = "box d" id = "sz28d"></div><!--
+				 --><div class = "box c" id = "sz28c"></div><!--
+				 --><div class = "box y" id = "sz28y"></div><!--
+				 --><div class = "box r" id = "sz28r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sz91k">91</div><!--
+				 --><div class = "box d" id = "sz91d"></div><!--
+				 --><div class = "box c" id = "sz91c"></div><!--
+				 --><div class = "box y" id = "sz91y"></div><!--
+				 --><div class = "box r" id = "sz91r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sz182k">182</div><!--
+				 --><div class = "box d" id = "sz182d"></div><!--
+				 --><div class = "box c" id = "sz182c"></div><!--
+				 --><div class = "box y" id = "sz182y"></div><!--
+				 --><div class = "box r" id = "sz182r"></div>
+			</div>
+
+			<div class = "divide"> ---- 上证 ---- </div>
+
+			<div class = "item">
+				<div class = "box k" id = "sh1k">1</div><!--
+				 --><div class = "box d" id = "sh1d"></div><!--
+				 --><div class = "box c" id = "sh1c"></div><!--
+				 --><div class = "box y" id = "sh1y"></div><!--
+				 --><div class = "box r" id = "sh1r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sh2k">2</div><!--
+				 --><div class = "box d" id = "sh2d"></div><!--
+				 --><div class = "box c" id = "sh2c"></div><!--
+				 --><div class = "box y" id = "sh2y"></div><!--
+				 --><div class = "box r" id = "sh2r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sh3k">3</div><!--
+				 --><div class = "box d" id = "sh3d"></div><!--
+				 --><div class = "box c" id = "sh3c"></div><!--
+				 --><div class = "box y" id = "sh3y"></div><!--
+				 --><div class = "box r" id = "sh3r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sh4k">4</div><!--
+				 --><div class = "box d" id = "sh4d"></div><!--
+				 --><div class = "box c" id = "sh4c"></div><!--
+				 --><div class = "box y" id = "sh4y"></div><!--
+				 --><div class = "box r" id = "sh4r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sh7k">7</div><!--
+				 --><div class = "box d" id = "sh7d"></div><!--
+				 --><div class = "box c" id = "sh7c"></div><!--
+				 --><div class = "box y" id = "sh7y"></div><!--
+				 --><div class = "box r" id = "sh7r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sh14k">14</div><!--
+				 --><div class = "box d" id = "sh14d"></div><!--
+				 --><div class = "box c" id = "sh14c"></div><!--
+				 --><div class = "box y" id = "sh14y"></div><!--
+				 --><div class = "box r" id = "sh14r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sh28k">28</div><!--
+				 --><div class = "box d" id = "sh28d"></div><!--
+				 --><div class = "box c" id = "sh28c"></div><!--
+				 --><div class = "box y" id = "sh28y"></div><!--
+				 --><div class = "box r" id = "sh28r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sh91k">91</div><!--
+				 --><div class = "box d" id = "sh91d"></div><!--
+				 --><div class = "box c" id = "sh91c"></div><!--
+				 --><div class = "box y" id = "sh91y"></div><!--
+				 --><div class = "box r" id = "sh91r"></div>
+			</div>
+			<div class = "item">
+				<div class = "box k" id = "sh182k">182</div><!--
+				 --><div class = "box d" id = "sh182d"></div><!--
+				 --><div class = "box c" id = "sh182c"></div><!--
+				 --><div class = "box y" id = "sh182y"></div><!--
+				 --><div class = "box r" id = "sh182r"></div>
+			</div>
+
+			<div class = "title"></div>
+
+			<div class = "memoT">功能说明：</div>
+			<div class = "memo">
+				国债回购品种繁多，而且价格是以年化收益率计算的，不同天数的国债回购中还夹杂着双休日及节假日等非交易日天数，这给我们到底该选择什么样的回购品种带来了很大的困扰。<br><br>
+				为此，小生特地做了这个国债回购收益对比表，帮助广大股民群众快速做出决策：<br><br>
+				首先，该表可一次性查出上交所及深交所的所有国债回购品种，免去了大家挨个敲股票代码的麻烦。<br><br>
+				其次，将各个回购品种扣过手续费后的实际收益，统一换算为交易日内每万元的日均收益。该日均收益的换算公式已经剔除了双休日、节假日等非交易日的干扰项，故该日均收益指标，可以将不同的国债回购品种放在同一个层级来做对比。广大股民群众只要比较日均收益的的大小，就可以确定自己该买哪种回购品种最划算啦。<br><br>
+				另：点击页面右上角的刷新按钮，可以获取最新的实时数据。
+			</div>
+
+			<div class = "memoT">表格说明：</div>
+			<div class = "memo">
+				天数：资金借出去的天数。比如：1，代表一天的国债回购；91，代表91天国债回购。<br><br>
+				天：资金借出期间实际的证交所交易日天数，去除了双休日及节假日。<br><br>
+				代码：不同国债回购品种的股票代码。其中，204 开头的代表上交所的回购品种；131 开头的代表深交所的回购品种。<br><br>
+				年化：代表从证交所查出来的最新的每百元年化收益率。比如：2.35，表示该回购品种每一百元借出一年可收回2.35元的收益。<br><br>
+				日均：是小生根据各回购品种的年化收益率换算出来的每万元日均收益率，是该对比表的重要参考指标。比如：1.12，表示该回购品种扣除手续费后每一万元借出一天可收回1.12元的收益。注意，这个日均值换算的天数基数是忽略了双休日和节假日的，只有这样换算出来的日均收益才能够与其它回购品种进行有意义的横向对比。
+			</div>
+
+			<div class = "memoT">操作流程：</div>
+			<div class = "memo">
+				打开交易软件 --> 卖出 --> 输入股票代码、数量和价格 --> 确认即可。
+			</div>
+
+			<div class = "memoT">数量方面：</div>
+			<div class = "memo">
+				上交所输入100的整数倍，100代表10万元；<br>
+				深交所输入10的整数倍，但至少是100，10代表1000元。
+			</div>
+
+			<div class = "memoT">价格方面：</div>
+			<div class = "memo">
+				各回购品种的成交价无时无刻不在变化，一般月底的价格会高一些。
+			</div>
+
+			<div class = "memoT">手续费方面：</div>
+			<div class = "memo">
+				上交所和深交所是一样的：<br><br>
+				1~4天的是十万分之一/天；<br>
+				7天的是每笔十万分之五；<br>
+				14天的是万分之一；<br>
+				28天的是万分之二；<br>
+				28天以上的是万分之三。<br><br>
+			</div>
+
+			<div class = "title"></div>
+
+			<div>
+				<div class = "wxlogo"></div><!--
+				 --><div class = "wxmemo">
+				 	以上内容来自 “犟子工作室” <br>如果喜欢，请扫码关注公众号。
+				 </div>
+			</div>
+
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>
