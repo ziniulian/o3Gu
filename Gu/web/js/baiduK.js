@@ -11,7 +11,7 @@ function init() {
 }
 
 function qry() {
-	var url = "getBaiduK/" + typ.value + "/" + cod.value;
+	var url = "srvGetBaiduK/" + typ.value + "/" + cod.value;
 	var o = utJson.toObj(ajx.get(url));
 	var n = o.length - 2;
 	var v = 0;

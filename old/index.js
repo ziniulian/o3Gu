@@ -239,7 +239,6 @@ var ajax = new LZR.Node.Db.NodeAjax ({
 	enc: "gb2312",
 	hd_sqls: {
 		fundamentals: "http://q.stock.sohu.com/cn/<0>/cwzb.shtml",	// 搜狐基本面消息
-		sinaK: "http://hq.sinajs.cn/list=<0>",	// 新浪接口
 		baiduK: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=8188&from_mid=1&eprop=<1>&query=<0>"	// 百度K线(minute, fiveday, month, year, dayK, weekK)
 	}
 });
@@ -292,22 +291,19 @@ ajax.evt.baiduK.add(function (r, req, res, next) {
 	}
 });
 
-ajax.evt.sinaK.add(function (r, req, res, next) {
-	var o = r.split(";");
-	var a = {};
-	var e;
-	for (var i = 0; i < o.length; i ++) {
-		e = /^.*(\d{6})="(.*)"$/.exec(o[i]);
-		a[e[1]] = e[2];
-	}
-	res.json(a);
-});
-
 // 数据库
 var mdb = new LZR.Node.Db.Mongo ({
-	conf: process.env.OPENSHIFT_MONGODB_DB_URL || "mongodb://localhost:27017/test",
+	conf: process.env.OPENSHIFT_MONGODB_DB_URL ? process.env.OPENSHIFT_MONGODB_DB_URL : "mongodb://localhost:27017/test",
 	autoErr: true,
 	hd_sqls: {
+		jsonpOptionalStockDat: {
+			tnam: "optionalStock",
+			funs: {
+				find: [{}, {"_id": 0}],
+				toArray: []
+			}
+		},
+
 		get: {
 			tnam: "gu",
 			funs: {
@@ -373,23 +369,41 @@ var r = new LZR.Node.Router ({
 	path: curPath,
 	hd_web: "web"
 });
+// var r = srv.ro;
 
-// 新浪接口
-r.get("/srvGetSinaK/:ids/:short?", function (req, res, next) {
-	var a = req.params.ids.split(",");
-	var short = req.params.short ? "s_" : "";
-	var d = "";
-	for (var i = 0; i < a.length; i ++) {
-		if (a[i] === "000000") {
-			d += short + "sh000001";
-		} else {
-			d += short + tools.matchEc(a[i]) + a[i];
-		}
-		d += ",";
+// 获取JSONP格式的自选股数据信息
+r.get("/jsonpOptionalStockDat", function (req, res, next) {
+	mdb.qry("jsonpOptionalStockDat", req, res, next);
+});
+
+// 百度K线
+r.get("/getBaiduK/:typ/:cod", function (req, res, next) {
+	// 解析typ
+	var t;
+	switch (req.params.typ) {
+		case "D":
+			t = "minute";
+			break;
+		case "5":
+			t = "fiveday";
+			break;
+		case "M":
+			t = "month";
+			break;
+		case "Y":
+			t = "year";
+			break;
+		case "K":
+			t = "dayK";
+			break;
+		case "W":
+			t = "weekK";
+			break;
+		default:
+			res.send("[]");
+			return;
 	}
-	d.replace(/(,*$)/g, "");
-
-	ajax.qry("sinaK", req, res, next, [d]);
+	ajax.qry("baiduK", req, res, next, [req.params.cod, t]);
 });
 
 // 页面解析测试
@@ -435,7 +449,7 @@ r.get("/srvFlushFund/:ids?", function (req, res, next) {
 /********************************************/
 
 // 获取基本面信息
-r.get("/srvGetFund/:ids?", function (req, res, next) {
+r.get("/srvGetFund/tim/:ids?", function (req, res, next) {
 	req.qpobj = {
 		fundTyp: "srvGetFund"
 	};
@@ -447,36 +461,6 @@ r.get("/srvFlushFundPrice", function (req, res, next) {
 	// 获取所有代码对应的价格
 	// 循环更新数据库中的参考价
 	res.send("null");
-});
-
-// 百度K线
-r.get("/srvGetBaiduK/:typ/:cod", function (req, res, next) {
-	// 解析typ
-	var t;
-	switch (req.params.typ) {
-		case "D":
-			t = "minute";
-			break;
-		case "5":
-			t = "fiveday";
-			break;
-		case "M":
-			t = "month";
-			break;
-		case "Y":
-			t = "year";
-			break;
-		case "K":
-			t = "dayK";
-			break;
-		case "W":
-			t = "weekK";
-			break;
-		default:
-			res.send("[]");
-			return;
-	}
-	ajax.qry("baiduK", req, res, next, [req.params.cod, t]);
 });
 
 // // 初始化模板
