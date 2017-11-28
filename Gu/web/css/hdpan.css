@@ -1,0 +1,32 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	/*height: 100%;*/
+	font-family: "Microsoft YaHei";
+	font-size: 24px;
+	font-size: 2vw;
+	color: #333;
+	/*background-color: #FF0;*/
+}
+
+/*取消a链接默认样式*/
+a{
+	text-decoration:none;
+}
+
+table, tbody, tr {
+	width: 100%;
+}
+
+tr, .r {
+	line-height: 1.5;
+	text-align: right;
+}
+
+td {
+	width: 25%;
+}
+
+tr:hover {
+	background-color: #EEE;
+}

@@ -293,12 +293,14 @@ ajax.evt.baiduK.add(function (r, req, res, next) {
 });
 
 ajax.evt.sinaK.add(function (r, req, res, next) {
-	var o = r.split(";");
+	var o = r.replace(/sh000001/, "000000").split(";\n");
 	var a = {};
 	var e;
-	for (var i = 0; i < o.length; i ++) {
-		e = /^.*(\d{6})="(.*)"$/.exec(o[i]);
-		a[e[1]] = e[2];
+	for (var i = 0; i < (o.length - 1); i ++) {
+		e = /^.*(\d{6})="(.*)";*$/.exec(o[i]);
+		if (e) {
+			a[e[1]] = e[2];
+		}
 	}
 	res.json(a);
 });
@@ -330,13 +332,6 @@ var mdb = new LZR.Node.Db.Mongo ({
 			}
 		}
 	}
-});
-
-mdb.evt.jsonpOptionalStockDat.add(function (r, req, res, next) {
-	var s = "var lzr_optionalStock_dat=";
-	s += mdb.utJson.toJson(r);
-	s += ";";
-	res.send(s);
 });
 
 mdb.evt.get.add(function (r, req, res, next) {
@@ -387,7 +382,7 @@ r.get("/srvGetSinaK/:ids/:short?", function (req, res, next) {
 		}
 		d += ",";
 	}
-	d.replace(/(,*$)/g, "");
+	d = d.replace(/(,*$)/g, "");
 
 	ajax.qry("sinaK", req, res, next, [d]);
 });
