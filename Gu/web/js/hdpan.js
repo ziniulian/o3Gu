@@ -29,23 +29,27 @@ var dat = {
 			mark.className = "mark";
 
 			var url = "srvGetSinaK/000000,399001," + dat.id;
-			var d = utJson.toObj(ajx.get(url));
-			var o = d[dat.id].split(",");
-			if (o[1] === "0.000") {
-				tbs.innerHTML = "<tr><td>" + o[2].replace(/\d{1}$/, "") + "</td></tr>";
-				tbb.innerHTML = "<tr><td>" + o[11].replace(/\d{1}$/, "") + "</td><td>" + o[10].replace(/\d{2}$/, "") + "</td></tr><tr><td>" + o[21].replace(/\d{1}$/, "") + "</td><td>" + o[20].replace(/\d{2}$/, "") + "</td></tr>";
-			} else {
-				if (!dat.o) {
-					dat.init(o);
-				}
-				dat.hd(o);
-				dat.hd2(d["000000"].split(","), "sh");
-				dat.hd2(d["399001"].split(","), "sz");
-			}
-
-			mark.className = "Lc_nosee";
-			dat.busy = false;
+			ajx.get(url, true);
 		}
+	},
+
+	hdflush: function (txt) {
+		var d = utJson.toObj(txt);
+		var o = d[dat.id].split(",");
+		if (o[1] === "0.000") {
+			tbs.innerHTML = "<tr><td>" + o[2].replace(/\d{1}$/, "") + "</td></tr>";
+			tbb.innerHTML = "<tr><td>" + o[11].replace(/\d{1}$/, "") + "</td><td>" + o[10].replace(/\d{2}$/, "") + "</td></tr><tr><td>" + o[21].replace(/\d{1}$/, "") + "</td><td>" + o[20].replace(/\d{2}$/, "") + "</td></tr>";
+		} else {
+			if (!dat.o) {
+				dat.init(o);
+			}
+			dat.hd(o);
+			dat.hd2(d["000000"].split(","), "sh");
+			dat.hd2(d["399001"].split(","), "sz");
+		}
+
+		mark.className = "Lc_nosee";
+		dat.busy = false;
 	},
 
 	// 次要数据
@@ -246,7 +250,9 @@ function init() {
 			// 空格或回车键
 			dat.flush();
 		}
-	}
+	};
+
+	ajx.evt.rsp.add(dat.hdflush);
 
 	// document.onclick = dat.flush;
 
