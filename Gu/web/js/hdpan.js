@@ -144,47 +144,58 @@ var dat = {
 
 	// 主要数据
 	hd: function (o) {
-		// 数据整理
+		// 数据收集
 		var p = dat.getP(o[3]);
 		var v = dat.getV(o[8]);
-		var m = dat.getP(o[29]);
-		var n = dat.getP(o[19]);
-		var b = dat.getP(o[11]);
-		var s = dat.getP(o[21]);
+		var b = [dat.getP(o[11]), dat.getV(o[10]), dat.getP(o[13]), dat.getV(o[12]), dat.getP(o[15]), dat.getV(o[14]), dat.getP(o[17]), dat.getV(o[16]), dat.getP(o[19]), dat.getV(o[18])];
+		var s = [dat.getP(o[21]), -dat.getV(o[20]), dat.getP(o[23]), -dat.getV(o[22]), dat.getP(o[25]), -dat.getV(o[24]), dat.getP(o[27]), -dat.getV(o[26]), dat.getP(o[29]), -dat.getV(o[28])];
+		var i, j = 0, m = 0, n = 0;
+		for (i = 8; i >= 0; i -= 2) {
+			if (!m && s[i]) {
+				m = s[i];
+			}
+			if (!n && b[i]) {
+				n = b[i];
+			}
+			if (m && n) {
+				break;
+			}
+		}
+		if (!m && !n) {
+			return;
+		} else if (!m || !n) {
+			m = n;
+		}
+
+		// 数据整理
 		var a = new Array((m - n + 1) * 2);
-		var i, j;
-		j = 0;
 		for (i = m; i >= n; i --) {
 			a[j] = i;
 			j ++;
 			a[j] = 0;
 			j ++;
 		}
-		for (i = 13; i < 18; i += 2) {
-			a[(2 * (m - dat.getP(o[i])) + 1)] = dat.getV(o[i - 1]);
+		for (i = 0; i < 10; i += 2) {
+			if (b[i]) {
+				a[(2 * (m - b[i]) + 1)] = b[i + 1];
+			}
+			if (s[i]) {
+				a[(2 * (m - s[i]) + 1)] = s[i + 1];
+			}
 		}
-		for (i = 23; i < 28; i += 2) {
-			a[(2 * (m - dat.getP(o[i])) + 1)] = -dat.getV(o[i - 1]);
-		}
-		a[(2 * (m - b) + 1)] = dat.getV(o[10]);
-		a[(2 * (m - s) + 1)] = -dat.getV(o[20]);
-		a[1] = -dat.getV(o[28]);
-		j --;
-		a[j] = dat.getV(o[18]);
 // console.log(a);
 
 		// 最值
-		j --;
-		if (a[j] && dat.min > a[j]) {
-			dat.min = a[j];
+		if (dat.min > n) {
+			dat.min = n;
 		}
-		if (dat.max < a [0]) {
-			dat.max = a[0];
+		if (dat.max < m) {
+			dat.max = m;
 		}
 
 		// 设值
-		for (i = 0; i <= j; i += 2) {
-			dat.set(a[i], a[i + 1], (a[i] > b ? -1 : 1));
+		for (i = 0; i < j; i += 2) {
+			dat.set(a[i], a[i + 1], (a[i] > b[0] ? -1 : 1));
 		}
 
 		// 当前值
@@ -208,10 +219,10 @@ var dat = {
 		// 页面刷新
 		tbs.innerHTML = "";
 		tbb.innerHTML = "";
-		if (dat.p === s) {
-			p = s - 1;
+		if (dat.p === s[0]) {
+			p = s[0] - 1;
 		} else {
-			p = b;
+			p = b[0];
 		}
 		for (i = dat.max; i > p; i --) {
 			tbs.appendChild(dat.ps[i].dom);
