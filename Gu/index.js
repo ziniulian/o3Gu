@@ -127,7 +127,7 @@ var tools = {
 			// 对原基本面对象进行补充
 			var n = a[0].length - 1;
 			for (; n > 0; n --) {
-				if (a[0][n] > s.balance.tim[0]) {
+				if (a[0][n] && (a[0][n] > s.balance.tim[0])) {
 					break;
 				}
 			}
@@ -260,9 +260,9 @@ ajax.evt.fundamentals.add(function (r, req, res, next) {
 		if (t) {
 			a = tools.parseFund(t);
 		}
-		if (req.qpobj.fundTyp == 2) {
+		if (req.qpobj.fundTyp === 2) {
 			res.json(tools.clsR.get( a ));
-		} else if (req.qpobj.fundTyp == 3) {
+		} else if (req.qpobj.fundTyp === 3) {
 			res.json(tools.clsR.get( a ? tools.crtFundObj(a) : a ));
 		} else {
 			req.qpobj.count --;
@@ -427,7 +427,7 @@ r.get("/srvGetSinaK/:ids/:short?", function (req, res, next) {
 // 页面解析测试
 r.get("/srvTestFund/:id/:typ?", function (req, res, next) {
 	req.qpobj = {
-		fundTyp: req.params.typ	// 0: 精简的HTML; 2: 解析后的数组; 3: 转换为数据库对象的样子;
+		fundTyp: (req.params.typ ? req.params.typ - 0 : 0)	// 0: 精简的HTML; 2: 解析后的数组; 3: 转换为数据库对象的样子;
 	};
 	ajax.qry("fundamentals", req, res, next, [req.params.id]);
 });
@@ -542,7 +542,6 @@ r.get("/srvGetByTim/:y/:q", function (req, res, next) {
 			res.json(tools.clsR.get(null, "无效的季度"));
 			return;
 	}
-// console.log(tim);
 
 	mdb.qry("get", req, res, next, [
 		{"balance.tim": tim},

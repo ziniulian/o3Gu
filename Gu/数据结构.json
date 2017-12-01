@@ -47,3 +47,13 @@ db.gu.find({id:"600000"}, {_id:0, id:1, "balance":1})[0].balance.other.length;
 
 // 查询积累的数据量
 db.gu.find({id:"600000"}, {_id:0, id:1, "balance":1})[0].balance.tim.length;
+
+// 纠正原来数据错误的时间
+db.gu.update({"balance.tim": 17346}, {"$set":{"balance.tim.$": 17347}}, false, true);
+db.gu.update({"balance.tim": 17255}, {"$set":{"balance.tim.$": 17256}}, false, true);
+db.gu.update({"balance.tim": 17165}, {"$set":{"balance.tim.$": 17166}}, false, true);
+db.gu.update({"balance.tim": 17073}, {"$set":{"balance.tim.$": 17074}}, false, true);
+db.gu.update({"balance.tim": 16981}, {"$set":{"balance.tim.$": 16982}}, false, true);
+db.gu.update({"balance.tim": 16890}, {"$set":{"balance.tim.$": 16891}}, false, true);
+db.gu.update({"balance.tim": 16799}, {"$set":{"balance.tim.$": 16800}}, false, true);
+db.gu.update({"balance.tim": 17408}, {"$set":{"balance.tim.$": null}}, false, true);
