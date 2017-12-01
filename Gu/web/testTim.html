@@ -1,0 +1,40 @@
+<html>
+	<head>
+		<title>时间换算</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8">
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+	</head>
+	<body>
+		<div id="boso">
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = function () {
+			LZR.load([
+				"LZR.Base.Time",
+				"LZR.Base.Json",
+				"LZR.HTML.Base.Ajax",
+				"LZR.HTML.Util.Url"
+			]);
+			var ajx = new LZR.HTML.Base.Ajax ();
+			var utJson = LZR.getSingleton(LZR.Base.Json);
+			var utUrl = LZR.getSingleton(LZR.HTML.Util.Url);
+			var utTim = LZR.getSingleton(LZR.Base.Time);
+
+			var s, c;
+			var o = utUrl.getRequest();
+
+			if (o.t) {
+				s = utJson.toObj(ajx.get("srvTestTim/" + o.t)).dat;
+				c = utTim.getDayTimestamp(o.t);
+				boso.innerHTML = "<br/>远程 ： " + s + "<br/><br/>本地 ： " + c;
+			} else if (o.v) {
+				s = utJson.toObj(ajx.get("srvTestTim/0/" + o.v)).dat;
+				c = utTim.parseDayTimestamp(o.v);
+				boso.innerHTML = "<br/>远程 ： " + s + " , " + new Date(s) + "<br/><br/>本地 ： " + c + " , " + new Date(c) + "<br/><br/>";
+			}
+		}
+	</script>
+</html>

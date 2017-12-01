@@ -13,64 +13,67 @@ function init() {
 function qry() {
 	var url = "srvGetBaiduK/" + typ.value + "/" + cod.value;
 	var o = utJson.toObj(ajx.get(url));
-	var n = o.length - 2;
-	var v = 0;
-	var c = 0;
-	var min = 0;
-	var max = 0;
-	tb.innerHTML = "";
-	for (var i = 0; i <= n; i ++) {
-		var a = o[i].split(",");
-		var r = document.createElement("tr");
+	if (o.ok) {
+		o = o.dat;
+		var n = o.length - 2;
+		var v = 0;
+		var c = 0;
+		var min = 0;
+		var max = 0;
+		tb.innerHTML = "";
+		for (var i = 0; i <= n; i ++) {
+			var a = o[i].split(",");
+			var r = document.createElement("tr");
 
-		var d = document.createElement("td");
-		d.innerHTML = a[0];
-		r.appendChild(d);
+			var d = document.createElement("td");
+			d.innerHTML = a[0];
+			r.appendChild(d);
 
-		d = document.createElement("td");
-		d.innerHTML = a[1];
-		r.appendChild(d);
+			d = document.createElement("td");
+			d.innerHTML = a[1];
+			r.appendChild(d);
 
-		d = document.createElement("td");
-		v = a[4].indexOf("%");
-		d.innerHTML = a[4].substr(0, v);
-		r.appendChild(d);
+			d = document.createElement("td");
+			v = a[4].indexOf("%");
+			d.innerHTML = a[4].substr(0, v);
+			r.appendChild(d);
 
-		d = document.createElement("td");
-		v = a[5].indexOf("万");
-		if (v > 0) {
-			v = a[5].substr(0, v) * 100;
-		} else {
-			v = a[5].indexOf("亿");
+			d = document.createElement("td");
+			v = a[5].indexOf("万");
 			if (v > 0) {
-				v = a[5].substr(0, v) * 1000000;
+				v = a[5].substr(0, v) * 100;
 			} else {
-				v = a[5] / 100;
+				v = a[5].indexOf("亿");
+				if (v > 0) {
+					v = a[5].substr(0, v) * 1000000;
+				} else {
+					v = a[5] / 100;
+				}
 			}
-		}
-		v = Math.round(v);
-		d.innerHTML = v;
-		r.appendChild(d);
+			v = Math.round(v);
+			d.innerHTML = v;
+			r.appendChild(d);
 
-		// 数据统计
-		if (i !== n) {
-			c += v;
-			if (min === 0 || min > v) {
-				min = v;
+			// 数据统计
+			if (i !== n) {
+				c += v;
+				if (min === 0 || min > v) {
+					min = v;
+				}
 			}
-		}
-		if (max < v) {
-			max = v;
+			if (max < v) {
+				max = v;
+			}
+
+			tb.appendChild(r);
 		}
 
-		tb.appendChild(r);
-	}
-
-	switch (typ.value) {
-		case "D":
-			total.innerHTML = c + v;
-			break;
-		default:
-			total.innerHTML = min + " , " + Math.floor(c/n) + " , " + max;
+		switch (typ.value) {
+			case "D":
+				total.innerHTML = c + v;
+				break;
+			default:
+				total.innerHTML = min + " , " + Math.floor(c/n) + " , " + max;
+		}
 	}
 }

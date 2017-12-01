@@ -7,12 +7,14 @@ var curPath = require.resolve("./index.js").replace("index.js", "");
 LZR.load([
 	"LZR.Base.Time",
 	"LZR.Node.Db.Mongo",
-	"LZR.Node.Db.NodeAjax"
+	"LZR.Node.Db.NodeAjax",
+	"LZR.Node.Srv.Result"
 ]);
 
 // 需要用到的根据函数
 var tools = {
 	utTim: LZR.getSingleton(LZR.Base.Time),
+	clsR: LZR.Node.Srv.Result,
 
 	// 基本面 HTML页面修剪，抓取出最重要的 HTML 信息
 	pruneFund: function (txt) {
@@ -100,18 +102,19 @@ var tools = {
 			ass: a[2],
 			pf: a[3],
 			up: a[4],
+			roe: a[5],
 			onam: [],
 			other: []
 		};
 		var i;
 
-		for (i = 0; i < 5; i ++) {
+		for (i = 0; i < 6; i ++) {
 			a[i].shift();
 		}
 		for (i = 0; i < o.tim.length; i ++) {
 			o.p.push(null);
 		}
-		for (i = 5; i < a.length; i ++) {
+		for (i = 6; i < a.length; i ++) {
 			o.onam.push(a[i].shift());
 			o.other.push(a[i]);
 		}
@@ -134,51 +137,40 @@ var tools = {
 				for (j = n; j > 0; j --) {
 					s.balance.p.unshift(null);
 				}
-				for (i = 0; i < a.length; i ++) {
-					switch (i) {
-						case 0:
-							for (j = n; j > 0; j --) {
-								s.balance.tim.unshift(a[i][j]);
-							}
-							break;
-						case 1:
-							for (j = n; j > 0; j --) {
-								s.balance.inc.unshift(a[i][j]);
-							}
-							break;
-						case 2:
-							for (j = n; j > 0; j --) {
-								s.balance.ass.unshift(a[i][j]);
-							}
-							break;
-						case 3:
-							for (j = n; j > 0; j --) {
-								s.balance.pf.unshift(a[i][j]);
-							}
-							break;
-						case 4:
-							for (j = n; j > 0; j --) {
-								s.balance.up.unshift(a[i][j]);
-							}
-							break;
-						default:
-							k = i - 5;
-							if (s.balance.onam[k] === a[i][0]) {
-								for (j = n; j > 0; j --) {
-									s.balance.other[k].unshift(a[i][j]);
-								}
-							} else {
-								for (j = n; j > 0; j --) {
-									s.balance.other[k].unshift(null);
-								}
-								k = s.balance.onam.length;
-								s.balance.onam[k] = a[i][0];
-								for (j = 0; j < len; j ++) {
-									a[i].push(null);
-								}
-								s.balance.other[k] = a[i];
-							}
-							break;
+				for (j = n; j > 0; j --) {
+					s.balance.tim.unshift(a[0][j]);
+				}
+				for (j = n; j > 0; j --) {
+					s.balance.inc.unshift(a[1][j]);
+				}
+				for (j = n; j > 0; j --) {
+					s.balance.ass.unshift(a[2][j]);
+				}
+				for (j = n; j > 0; j --) {
+					s.balance.pf.unshift(a[3][j]);
+				}
+				for (j = n; j > 0; j --) {
+					s.balance.up.unshift(a[4][j]);
+				}
+				for (j = n; j > 0; j --) {
+					s.balance.roe.unshift(a[5][j]);
+				}
+				for (i = 6; i < a.length; i ++) {
+					k = i - 6;
+					if (s.balance.onam[k] === a[i][0]) {
+						for (j = n; j > 0; j --) {
+							s.balance.other[k].unshift(a[i][j]);
+						}
+					} else {
+						for (j = n; j > 0; j --) {
+							s.balance.other[k].unshift(null);
+						}
+						k = s.balance.onam.length;
+						s.balance.onam[k] = a[i].shift();
+						for (j = 0; j < len; j ++) {
+							a[i].push(null);
+						}
+						s.balance.other[k] = a[i];
 					}
 				}
 				f.balance = s.balance;
@@ -230,6 +222,20 @@ var tools = {
 			r = 0;
 		}
 		return r;
+	},
+
+	// 计算新浪代码号
+	calcSinaId: function (p, id) {
+		if (id === "000000") {
+			return (p + "sh000001");
+		} else {
+			return (p + tools.matchEc(id) + id);
+		}
+	},
+
+	// 通过数据库对象计算新浪代码号
+	calcSinaIdByDb: function (p, o) {
+		return p + o.ec + (o.tid || o.id);
 	}
 
 };
@@ -239,6 +245,7 @@ var ajax = new LZR.Node.Db.NodeAjax ({
 	enc: "gb2312",
 	hd_sqls: {
 		fundamentals: "http://q.stock.sohu.com/cn/<0>/cwzb.shtml",	// 搜狐基本面消息
+		fundPrice: "http://hq.sinajs.cn/list=<0>",	// 新浪接口 _ 基本面价格
 		sinaK: "http://hq.sinajs.cn/list=<0>",	// 新浪接口
 		baiduK: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?resource_id=8188&from_mid=1&eprop=<1>&query=<0>"	// 百度K线(minute, fiveday, month, year, dayK, weekK)
 	}
@@ -254,9 +261,9 @@ ajax.evt.fundamentals.add(function (r, req, res, next) {
 			a = tools.parseFund(t);
 		}
 		if (req.qpobj.fundTyp == 2) {
-			res.json(a);
+			res.json(tools.clsR.get( a ));
 		} else if (req.qpobj.fundTyp == 3) {
-			res.json(a ? tools.crtFundObj(a) : a);
+			res.json(tools.clsR.get( a ? tools.crtFundObj(a) : a ));
 		} else {
 			req.qpobj.count --;
 			if (a) {
@@ -266,6 +273,11 @@ ajax.evt.fundamentals.add(function (r, req, res, next) {
 					nam: o.nam
 				};
 				req.qpobj.fund[o.id] = f;
+
+				// 重要元素换位
+				i = a[5];
+				a[5] = a[6];
+				a[6] = i;
 				tools.upFund(f, s, a);
 				if (f.balance || f.nam !== s.nam) {
 					// 将整理后的数据覆盖到数据库中
@@ -273,7 +285,7 @@ ajax.evt.fundamentals.add(function (r, req, res, next) {
 				}
 			}
 			if (req.qpobj.count === 0) {
-				res.json(req.qpobj.fund);
+				res.json(tools.clsR.get( req.qpobj.fund ));
 			}
 		}
 	}
@@ -286,9 +298,9 @@ ajax.evt.baiduK.add(function (r, req, res, next) {
 	}
 	if (o) {
 		o = o.disp_data[0].property[0].data.display.tab.p;
-		res.json(o.split(";"));
+		res.json(tools.clsR.get(o.split(";")));
 	} else {
-		res.send("[]");
+		res.json(tools.clsR.get(null, "无数据"));
 	}
 });
 
@@ -302,7 +314,22 @@ ajax.evt.sinaK.add(function (r, req, res, next) {
 			a[e[1]] = e[2];
 		}
 	}
-	res.json(a);
+	res.json(tools.clsR.get(a));
+});
+
+ajax.evt.fundPrice.add(function (r, req, res, next) {
+	// 循环更新数据库中的参考价
+	var o = r.split(";\n");
+	var a = {};
+	var e;
+	for (var i = 0; i < (o.length - 1); i ++) {
+		e = /^.*(\d{6})="[^,]*,([\d\.]*).*";*$/.exec(o[i]);
+		if (e) {
+			mdb.qry("set", req, res, next, [ {"id": e[1]}, {"$set": {"balance.p.0": (e[2] - 0)}} ]);
+			a[e[1]] = e[2];
+		}
+	}
+	res.json(tools.clsR.get(a));
 });
 
 // 数据库
@@ -340,8 +367,10 @@ mdb.evt.get.add(function (r, req, res, next) {
 			var a = tools.idFilter(req.qpobj.oids, r);
 			if (a.length) {
 				mdb.qry("add", req, res, next, [a]);
+				res.json(tools.clsR.get(a));
+			} else {
+				res.json(tools.clsR.get(null, "无需导入"));
 			}
-			res.json(a);
 			break;
 		case "srvFlushFund":
 			if (r.length) {
@@ -354,11 +383,24 @@ mdb.evt.get.add(function (r, req, res, next) {
 					ajax.qry("fundamentals", req, res, next, [r[i].id]);
 				}
 			} else {
-				res.send("null");
+				res.json(tools.clsR.get(null, "代码尚未导入"));
+			}
+			break;
+		case "srvFlushFundPrice":
+			if (r.length) {
+				// 获取所有代码对应的价格
+				var d = "";
+				for (var i = 0; i < r.length; i ++) {
+					d += tools.calcSinaIdByDb(",s_", r[i]);
+				}
+				d = d.substr(1);
+				ajax.qry("fundPrice", req, res, next, [d]);
+			} else {
+				res.json(tools.clsR.get(null, "没有可操作的对象"));
 			}
 			break;
 		default:
-			res.json(r);
+			res.json(tools.clsR.get(r));
 			break;
 	}
 });
@@ -372,17 +414,12 @@ var r = new LZR.Node.Router ({
 // 新浪接口
 r.get("/srvGetSinaK/:ids/:short?", function (req, res, next) {
 	var a = req.params.ids.split(",");
-	var short = req.params.short ? "s_" : "";
+	var short = req.params.short ? ",s_" : ",";
 	var d = "";
 	for (var i = 0; i < a.length; i ++) {
-		if (a[i] === "000000") {
-			d += short + "sh000001";
-		} else {
-			d += short + tools.matchEc(a[i]) + a[i];
-		}
-		d += ",";
+		d += tools.calcSinaId(short, a[i]);
 	}
-	d = d.replace(/(,*$)/g, "");
+	d = d.substr(1);
 
 	ajax.qry("sinaK", req, res, next, [d]);
 });
@@ -425,23 +462,22 @@ r.get("/srvFlushFund/:ids?", function (req, res, next) {
 	}
 });
 
-
-
-/********************************************/
-
-// 获取基本面信息
-r.get("/srvGetFund/:ids?", function (req, res, next) {
+// 更新基本面的参考价 (只更新最新参考价为空的)
+r.get("/srvFlushFundPrice/:ids?", function (req, res, next) {
 	req.qpobj = {
-		fundTyp: "srvGetFund"
+		fundTyp: "srvFlushFundPrice"
 	};
-});
-
-// 更新基本面的参考价
-r.get("/srvFlushFundPrice", function (req, res, next) {
-	// 获取所有现有的代码
-	// 获取所有代码对应的价格
-	// 循环更新数据库中的参考价
-	res.send("null");
+	if (req.params.ids) {
+		mdb.qry("get", req, res, next, [
+			{"typ": 1, "balance.p.0":{"$in":[null], "$exists":true}, "id": {"$in": req.params.ids.split(",")}},
+			{"_id": 0, "id": 1, "ec": 1, "tid": 1}
+		]);
+	} else {
+		mdb.qry("get", req, res, next, [
+			{"typ": 1, "balance.p.0":{"$in":[null], "$exists":true}},
+			{"_id": 0, "id": 1, "ec": 1, "tid": 1}
+		]);
+	}
 });
 
 // 百度K线
@@ -468,10 +504,76 @@ r.get("/srvGetBaiduK/:typ/:cod", function (req, res, next) {
 			t = "weekK";
 			break;
 		default:
-			res.send("[]");
+			res.json(tools.clsR.get(null, "类型错误"));
 			return;
 	}
 	ajax.qry("baiduK", req, res, next, [req.params.cod, t]);
+});
+
+// 时间测试
+r.get("/srvTestTim/:t/:v?", function (req, res, next) {
+	if (req.params.v) {
+		res.json(tools.clsR.get(tools.utTim.parseDayTimestamp(req.params.v)));
+	} else {
+		res.json(tools.clsR.get(tools.utTim.getDayTimestamp(req.params.t)));
+	}
+});
+
+// 数据筛选
+r.get("/srvGetByTim/:y/:q", function (req, res, next) {
+	req.qpobj = {
+		fundTyp: "srvGetByTim"
+	};
+	var tim;
+	switch (req.params.q) {
+		case "1":
+			tim = tools.parseFundTim (req.params.y + "-3-31");
+			break;
+		case "2":
+			tim = tools.parseFundTim (req.params.y + "-6-30");
+			break;
+		case "3":
+			tim = tools.parseFundTim (req.params.y + "-9-30");
+			break;
+		case "4":
+			tim = tools.parseFundTim (req.params.y + "-12-31");
+			break;
+		default:
+			res.json(tools.clsR.get(null, "无效的季度"));
+			return;
+	}
+// console.log(tim);
+
+	mdb.qry("get", req, res, next, [
+		{"balance.tim": tim},
+		{"_id":0, "id":1, "nam":1, "balance.p":1, "balance.tim":1, "balance.inc":1, "balance.ass":1, "balance.pf":1, "balance.up":1, "balance.roe":1}
+	]);
+});
+
+// 获取所有代码
+r.get("/srvGetAllIds", function (req, res, next) {
+	req.qpobj = {
+		fundTyp: "srvGetAllIds"
+	};
+	mdb.qry("get", req, res, next, [
+		{"typ": 1}, {"_id": 0, "id": 1}
+	]);
+});
+
+// 获取信息
+r.get("/srvGet/:ids?", function (req, res, next) {
+	req.qpobj = {
+		fundTyp: "srvGet"
+	};
+	if (req.params.ids) {
+		mdb.qry("get", req, res, next, [
+			{"id": {"$in": req.params.ids.split(",")}}, {"_id": 0}
+		]);
+	} else {
+		mdb.qry("get", req, res, next, [
+			{"typ": 1}, {"_id": 0}
+		]);
+	}
 });
 
 // // 初始化模板
