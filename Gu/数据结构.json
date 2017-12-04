@@ -1,13 +1,13 @@
 [
     {id:代码,nam:名称,alia:别名,ec:所属的交易所,tid:真正的股票代码,typ:类型（指数为0，股票为1）
         op:{
-            p0: 理想价位,
+            p: 成本价,
             max: 止盈位,
             min: 止损位,
-            p: 买入价,
             v: 持有数（手）,
             vmax: 成交量上限（手）,
-            vmin: 成交量下限（手）
+            vmin: 成交量下限（手）,
+            p0: 理想买入价位
         },
         balance: {
             p: [],  参考价
@@ -40,13 +40,13 @@ for (var i = 0; i < a.length(); i ++) {
 }
 
 // 批量删除 净资产收益率 参数名
-db.gu.update({}, {$pull:{"balance.onam":"净资产收益率"}}, false, true);
+db.gu.update({}, {"$pull":{"balance.onam":"净资产收益率"}}, false, true);
 
 // 查询其它参数的数量
-db.gu.find({id:"600000"}, {_id:0, id:1, "balance":1})[0].balance.other.length;
+db.gu.find({"id":"600000"}, {"_id":0, "id":1, "balance":1})[0].balance.other.length;
 
 // 查询积累的数据量
-db.gu.find({id:"600000"}, {_id:0, id:1, "balance":1})[0].balance.tim.length;
+db.gu.find({"id":"600000"}, {"_id":0, "id":1, "balance":1})[0].balance.tim.length;
 
 // 纠正原来数据错误的时间
 db.gu.update({"balance.tim": 17346}, {"$set":{"balance.tim.$": 17347}}, false, true);
@@ -57,3 +57,10 @@ db.gu.update({"balance.tim": 16981}, {"$set":{"balance.tim.$": 16982}}, false, t
 db.gu.update({"balance.tim": 16890}, {"$set":{"balance.tim.$": 16891}}, false, true);
 db.gu.update({"balance.tim": 16799}, {"$set":{"balance.tim.$": 16800}}, false, true);
 db.gu.update({"balance.tim": 17408}, {"$set":{"balance.tim.$": null}}, false, true);
+
+// 删除错位的参考价
+db.gu.find({"id": {"$in": ["000550","601888","601211","300628","300533","002383"]}}, {"_id":0, "id":1, "balance.p":1});
+db.gu.update({"id": {"$in": ["000550","601888","601211","300628","300533","002383"]}}, {"$set":{"balance.p.1": null, "balance.p.2": null}}, false, true);
+
+// 添加自选股
+db.gu.insert({"id": "opmask", "ids": []});

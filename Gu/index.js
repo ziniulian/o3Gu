@@ -285,7 +285,11 @@ ajax.evt.fundamentals.add(function (r, req, res, next) {
 				}
 			}
 			if (req.qpobj.count === 0) {
-				res.json(tools.clsR.get( req.qpobj.fund ));
+				if (req.qpobj.noRes) {
+					res.json(tools.clsR.get(true));
+				} else {
+					res.json(tools.clsR.get( req.qpobj.fund ));
+				}
 			}
 		}
 	}
@@ -363,6 +367,31 @@ var mdb = new LZR.Node.Db.Mongo ({
 
 mdb.evt.get.add(function (r, req, res, next) {
 	switch (req.qpobj.fundTyp) {
+		case "srvGetOp":
+			if (r.length) {
+				req.qpobj.fundTyp = "srvGetOpInfo";
+				mdb.qry("get", req, res, next, [
+					{"id": {"$in": r[0].ids}}, {"_id":0, "id":1, "alia":1, "ec":1, "nam":1, "op":1}
+				]);
+			} else {
+				mdb.qry("add", req, res, next, [[{"id": "opmask", "ids": []}]]);
+				res.json(tools.clsR.get(null, "暂无数据"));
+			}
+			break;
+		case "srvAddOp":
+			if (r.length) {
+				if (!r[0].op) {
+					mdb.qry("set", req, res, next, [
+						{"id": r[0].id},
+						{"$set":{"op":{"p":0,"max":0,"min":0,"v":0,"vmax":0,"vmin":0,"p0":0}}}
+					]);
+				}
+				mdb.qry("set", req, res, next, [{"id": "opmask"}, {"$addToSet": {"ids": r[0].id}}]);
+				res.json(tools.clsR.get(r[0]));
+			} else {
+				res.json(tools.clsR.get(null, "代码尚未导入 ... srvAddIds 、 srvFlushFund 、 srvFlushFundPrice"));
+			}
+			break;
 		case "srvAddIds":
 			var a = tools.idFilter(req.qpobj.oids, r);
 			if (a.length) {
@@ -400,7 +429,11 @@ mdb.evt.get.add(function (r, req, res, next) {
 			}
 			break;
 		default:
-			res.json(tools.clsR.get(r));
+			if (r.length) {
+				res.json(tools.clsR.get(r));
+			} else {
+				res.json(tools.clsR.get(null, "暂无数据"));
+			}
 			break;
 	}
 });
@@ -424,31 +457,93 @@ r.get("/srvGetSinaK/:ids/:short?", function (req, res, next) {
 	ajax.qry("sinaK", req, res, next, [d]);
 });
 
-// 页面解析测试
-r.get("/srvTestFund/:id/:typ?", function (req, res, next) {
+// 获取自选股
+r.get("/srvGetOp", function (req, res, next) {
 	req.qpobj = {
-		fundTyp: (req.params.typ ? req.params.typ - 0 : 0)	// 0: 精简的HTML; 2: 解析后的数组; 3: 转换为数据库对象的样子;
+		fundTyp: "srvGetOp"
 	};
-	ajax.qry("fundamentals", req, res, next, [req.params.id]);
+	mdb.qry("get", req, res, next, [{"id": "opmask"}, {"_id": 0, "ids":1}]);
 });
 
-// 批量导入代码
-r.get("/srvAddIds/:ids", function (req, res, next) {
-	var a = req.params.ids.split(",");
-	req.qpobj = {
-		oids: a,
-		fundTyp: "srvAddIds"
+// 修改自选股
+r.get("/srvSetOp/:id/:p/:max/:min/:v/:vmax/:vmin/:p0/:alia?", function (req, res, next) {
+	var o = {
+		op: {
+			p: req.params.p - 0,
+			max: req.params.max - 0,
+			min: req.params.min - 0,
+			v: req.params.v - 0,
+			vmax: req.params.vmax - 0,
+			vmin: req.params.vmin - 0,
+			p0: req.params.p0 - 0
+		}
 	};
-	// 数据库不进行锁处理
+	if (req.params.alia) {
+		o.alia = req.params.alia;
+	}
+	mdb.qry("set", req, res, next, [{"id":req.params.id}, {"$set": o}]);
+	res.json(tools.clsR.get(o));
+});
+
+// 添加自选股
+r.get("/srvAddOp/:id", function (req, res, next) {
+	req.qpobj = {
+		fundTyp: "srvAddOp"
+	};
+	mdb.qry("get", req, res, next, [{"id":req.params.id}, {"_id":0, "id":1, "op":1}]);
+});
+
+// 删除自选股
+r.get("/srvDelOp/:id", function (req, res, next) {
+	mdb.qry("set", req, res, next, [{"id": "opmask"}, {"$pull": {"ids": req.params.id}}]);
+	res.json(tools.clsR.get(req.params.id));
+});
+
+// 数据筛选
+r.get("/srvGetByTim/:y/:q", function (req, res, next) {
+	req.qpobj = {
+		fundTyp: "srvGetByTim"
+	};
+	var tim;
+	switch (req.params.q) {
+		case "1":
+			tim = tools.parseFundTim (req.params.y + "-3-31");
+			break;
+		case "2":
+			tim = tools.parseFundTim (req.params.y + "-6-30");
+			break;
+		case "3":
+			tim = tools.parseFundTim (req.params.y + "-9-30");
+			break;
+		case "4":
+			tim = tools.parseFundTim (req.params.y + "-12-31");
+			break;
+		default:
+			res.json(tools.clsR.get(null, "无效的季度"));
+			return;
+	}
+
 	mdb.qry("get", req, res, next, [
-		{"id": {"$in": a}}, {"_id": 0, "id": 1}
+		{"balance.tim": tim},
+		{"_id":0, "id":1, "nam":1, "balance.p":1, "balance.tim":1, "balance.inc":1, "balance.ass":1, "balance.pf":1, "balance.up":1, "balance.roe":1}
+	]);
+});
+
+// 获取所有代码
+r.get("/srvGetAllIds", function (req, res, next) {
+	req.qpobj = {
+		fundTyp: "srvGetAllIds"
+	};
+	mdb.qry("get", req, res, next, [
+		{"typ": 1}, {"_id": 0, "id": 1}
 	]);
 });
 
 // 更新基本面信息
-r.get("/srvFlushFund/:ids?", function (req, res, next) {
+r.get("/srvFlushFund/:ids?/:noRes?", function (req, res, next) {
 	req.qpobj = {
-		fundTyp: "srvFlushFund"
+		fundTyp: "srvFlushFund",
+		noRes: req.params.noRes || false	// 不返回详细结果
 	};
 	if (req.params.ids) {
 		mdb.qry("get", req, res, next, [
@@ -510,52 +605,16 @@ r.get("/srvGetBaiduK/:typ/:cod", function (req, res, next) {
 	ajax.qry("baiduK", req, res, next, [req.params.cod, t]);
 });
 
-// 时间测试
-r.get("/srvTestTim/:t/:v?", function (req, res, next) {
-	if (req.params.v) {
-		res.json(tools.clsR.get(tools.utTim.parseDayTimestamp(req.params.v)));
-	} else {
-		res.json(tools.clsR.get(tools.utTim.getDayTimestamp(req.params.t)));
-	}
-});
-
-// 数据筛选
-r.get("/srvGetByTim/:y/:q", function (req, res, next) {
+// 批量导入代码
+r.get("/srvAddIds/:ids", function (req, res, next) {
+	var a = req.params.ids.split(",");
 	req.qpobj = {
-		fundTyp: "srvGetByTim"
+		oids: a,
+		fundTyp: "srvAddIds"
 	};
-	var tim;
-	switch (req.params.q) {
-		case "1":
-			tim = tools.parseFundTim (req.params.y + "-3-31");
-			break;
-		case "2":
-			tim = tools.parseFundTim (req.params.y + "-6-30");
-			break;
-		case "3":
-			tim = tools.parseFundTim (req.params.y + "-9-30");
-			break;
-		case "4":
-			tim = tools.parseFundTim (req.params.y + "-12-31");
-			break;
-		default:
-			res.json(tools.clsR.get(null, "无效的季度"));
-			return;
-	}
-
+	// 数据库不进行锁处理
 	mdb.qry("get", req, res, next, [
-		{"balance.tim": tim},
-		{"_id":0, "id":1, "nam":1, "balance.p":1, "balance.tim":1, "balance.inc":1, "balance.ass":1, "balance.pf":1, "balance.up":1, "balance.roe":1}
-	]);
-});
-
-// 获取所有代码
-r.get("/srvGetAllIds", function (req, res, next) {
-	req.qpobj = {
-		fundTyp: "srvGetAllIds"
-	};
-	mdb.qry("get", req, res, next, [
-		{"typ": 1}, {"_id": 0, "id": 1}
+		{"id": {"$in": a}}, {"_id": 0, "id": 1}
 	]);
 });
 
@@ -572,6 +631,23 @@ r.get("/srvGet/:ids?", function (req, res, next) {
 		mdb.qry("get", req, res, next, [
 			{"typ": 1}, {"_id": 0}
 		]);
+	}
+});
+
+// 页面解析测试
+r.get("/srvTestFund/:id/:typ?", function (req, res, next) {
+	req.qpobj = {
+		fundTyp: (req.params.typ ? req.params.typ - 0 : 0)	// 0: 精简的HTML; 2: 解析后的数组; 3: 转换为数据库对象的样子;
+	};
+	ajax.qry("fundamentals", req, res, next, [req.params.id]);
+});
+
+// 时间测试
+r.get("/srvTestTim/:t/:v?", function (req, res, next) {
+	if (req.params.v) {
+		res.json(tools.clsR.get(tools.utTim.parseDayTimestamp(req.params.v)));
+	} else {
+		res.json(tools.clsR.get(tools.utTim.getDayTimestamp(req.params.t)));
 	}
 });
 
