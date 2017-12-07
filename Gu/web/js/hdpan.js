@@ -248,8 +248,16 @@ function init() {
 	}
 
 	document.onkeyup = function (e) {
-		if (e.keyCode === 32 || e.keyCode === 13) {
-			// 空格或回车键
+		if (e.keyCode === 32) {
+			// 空格
+			dat.flush();
+		} else if (e.keyCode === 13) {
+			// 回车键
+			if (dat.busy) {
+				ajx.abort();
+				mark.className = "Lc_nosee";
+				dat.busy = false;
+			}
 			dat.flush();
 		}
 	};
