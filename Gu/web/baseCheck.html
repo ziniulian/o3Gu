@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>基本面查询</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8" />
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="js/baseCheck.js"></script>
+		<link rel="stylesheet" href="css/hdpan.css">
+
+		<style type="text/css">
+			th {
+				cursor: pointer;
+			}
+			tr {
+				font-size: 0.6rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<div class="logo">
+				<a class="logohome" href="index.html"></a>
+				<select id="secYear" onchange="dat.flush();"></select>
+				<select id="secQuar" onchange="dat.flush();">
+					<option value="1">一季报</option>
+					<option value="2">半年报</option>
+					<option value="3">三季报</option>
+					<option value="4">年报</option>
+				</select>
+			</div>
+			<div>
+				<table>
+					<tbody>
+						<tr>
+							<th onclick="dat.qry('id');">代号 <span id="idSdom"></span> </th>
+							<th>名称</th>
+							<th onclick="dat.qry('p');">参考价 <span id="pSdom"></span> </th>
+							<th onclick="dat.qry('roe');">净资产收益率 <span id="roeSdom"></span> </th>
+							<th onclick="dat.qry('ass');">每股净资产 <span id="assSdom"></span> </th>
+							<th onclick="dat.qry('ta');">真净资产 <span id="taSdom"></span> </th>
+							<th onclick="dat.qry('fa');">假净资产 <span id="faSdom"></span> </th>
+							<th onclick="dat.qry('inc');">每股收益 <span id="incSdom"></span> </th>
+							<th onclick="dat.qry('pf');">每股资本公积金 <span id="pfSdom"></span> </th>
+							<th onclick="dat.qry('up');">每股未分配利润 <span id="upSdom"></span> </th>
+						</tr>
+					</tbody>
+					<tbody id="tbs">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>

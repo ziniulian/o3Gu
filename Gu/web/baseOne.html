@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>基本面详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8" />
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="js/baseOne.js"></script>
+		<link rel="stylesheet" href="css/hdpan.css">
+
+		<style type="text/css">
+			tr {
+				font-size: 0.6rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<div class="logo">
+				<a class="logohome" href="baseCheck.html"></a>
+				<span id="namSdom"></span>
+				<input name="tt" type="radio" onclick="dat.setY(false);" checked>季报</input>
+				<input name="tt" type="radio" onclick="dat.setY(true);">年报</input>
+			</div>
+			<div>
+				<table>
+					<tbody>
+						<tr>
+							<th>时间</th>
+							<th>参考价</th>
+							<th>净资产收益率</th>
+							<th>每股净资产</th>
+							<th>真净资产</th>
+							<th>假净资产</th>
+							<th>每股收益</th>
+							<th>每股资本公积金</th>
+							<th>每股未分配利润</th>
+						</tr>
+					</tbody>
+					<tbody id="tbs">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>

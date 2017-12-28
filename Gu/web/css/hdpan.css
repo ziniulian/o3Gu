@@ -6,7 +6,7 @@ html, body {
 	font-size: 24px;
 	font-size: 2vw;
 	color: #333;
-	/*background-color: #FF0;*/
+	background-color: #FF0;
 }
 
 /*取消a链接默认样式*/
@@ -14,8 +14,21 @@ a{
 	text-decoration:none;
 }
 
+/*取消下拉框、输入框默认样式*/
+select, input, textarea {
+	border: none;
+	outline: medium;
+	font-size: 1rem;
+	background-color: #FF0;
+}
+
 table, tbody, tr {
 	width: 100%;
+}
+
+tr:hover {
+	/* background-color: #EEE; */
+	background-color: #FF7;
 }
 
 tr, .r {
@@ -23,16 +36,27 @@ tr, .r {
 	text-align: right;
 }
 
-td {
-	width: 25%;
+.logo {
+	position: relative;
+	padding-right: 3.5rem;
+	margin-bottom: 1rem;
+	height: 3rem;
+	line-height: 3rem;
+	background-repeat: no-repeat;
+	background-position: right center;
+	background-clip: padding-box;
+	background-size: contain;
+	background-image: url(/favicon.ico);
+	border-bottom: 0.2rem solid red;
 }
 
-tr:hover {
-	background-color: #EEE;
-}
-
-.boso {
-	height: 100%;
+.logohome {
+	position: absolute;
+	display: block;
+	width: 3rem;
+	height: 3rem;
+	top: 0;
+	right: 0;
 }
 
 .mark {
@@ -46,6 +70,14 @@ tr:hover {
 	color: #FFF;
 	text-align: center;
 	font-size: 3rem;
+}
+
+.txtBox {
+	display: block;
+	width: 80%;
+	height: 15rem;
+	margin: 0 auto;
+	border: 0.2rem solid red;
 }
 
 /*---------------------- 公共样式库 ----------------------*/

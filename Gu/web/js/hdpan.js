@@ -12,7 +12,6 @@ var utUrl = LZR.getSingleton(LZR.HTML.Util.Url);
 var dat = {
 	busy: false,
 	id: null,
-	short: false,
 	o: 0,
 	c: 0,
 	p: 0,
@@ -24,7 +23,7 @@ var dat = {
 	ps: {},
 
 	flush: function () {
-		if (!dat.busy) {
+		if (!dat.busy && dat.id) {
 			dat.busy = true;
 			mark.className = "mark";
 
@@ -91,6 +90,7 @@ var dat = {
 
 	// 初始化
 	init: function (o) {
+		namSdom.innerHTML = o[0];
 		dat.o = dat.getP(o[1]);
 		dat.c = dat.getP(o[2]);
 		if (dat.o < dat.c) {
@@ -237,15 +237,31 @@ var dat = {
 			tbb.appendChild(dat.ps[i].dom);
 		}
 		dvv.innerHTML = dat.v;
+	},
+
+	reload: function (d) {
+		if (d) {
+			dat.id = d;
+			dat.o = 0;
+			dat.c = 0;
+			dat.p = 0;
+			dat.v = 0;
+			dat.min = 0;
+			dat.max = 0;
+			// dat.sz = 0;
+			// dat.sh = 0;
+			// tbs.innerHTML = "";
+			// tbb.innerHTML = "";
+			dat.ps = {};
+			dat.flush();
+		}
 	}
 }
 
 function init() {
 	var r = utUrl.getRequest();
+	ajx.evt.rsp.add(dat.hdflush);
 	dat.id = r.id;
-	if (r.s) {
-		dat.short = true;
-	}
 
 	document.onkeyup = function (e) {
 		if (e.keyCode === 32) {
@@ -261,10 +277,6 @@ function init() {
 			dat.flush();
 		}
 	};
-
-	ajx.evt.rsp.add(dat.hdflush);
-
-	// document.onclick = dat.flush;
 
 	dat.flush();
 }

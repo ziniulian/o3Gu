@@ -430,7 +430,7 @@ mdb.evt.get.add(function (r, req, res, next) {
 			break;
 		default:
 			if (r.length) {
-				res.json(tools.clsR.get(r));
+				res.json(tools.clsR.get(r, req.qpobj.msg));
 			} else {
 				res.json(tools.clsR.get(null, "暂无数据"));
 			}
@@ -523,6 +523,7 @@ r.get("/srvGetByTim/:y/:q", function (req, res, next) {
 			return;
 	}
 
+	req.qpobj.msg = tim;
 	mdb.qry("get", req, res, next, [
 		{"balance.tim": tim},
 		{"_id":0, "id":1, "nam":1, "balance.p":1, "balance.tim":1, "balance.inc":1, "balance.ass":1, "balance.pf":1, "balance.up":1, "balance.roe":1}

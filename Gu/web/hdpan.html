@@ -1,16 +1,28 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>HdPan</title>
+		<title>盘量分析</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
 		<meta charset="utf-8" />
 		<script type="text/javascript" src="/myLib/LZR.js"></script>
 		<script type="text/javascript" src="js/hdpan.js"></script>
 		<link rel="stylesheet" href="css/hdpan.css">
+
+		<style type="text/css">
+			td {
+				width: 25%;
+			}
+		</style>
 	</head>
 
 	<body>
 		<div id="boso" class="boso">
+			<div class="logo">
+				<a class="logohome" href="index.html"></a>
+				<input id="idDom" type="text" placeholder="请输入代码"></input>
+				<a href="javascript: dat.reload(idDom.value);"> 查询 >> </a>
+				<span id="namSdom"></span>
+			</div>
 			<div><table><tbody><tr>
 				<td id="szp"></td>
 				<td id="szs"></td>
