@@ -458,11 +458,20 @@ r.get("/srvGetSinaK/:ids/:short?", function (req, res, next) {
 });
 
 // 获取自选股
-r.get("/srvGetOp", function (req, res, next) {
-	req.qpobj = {
-		fundTyp: "srvGetOp"
-	};
-	mdb.qry("get", req, res, next, [{"id": "opmask"}, {"_id": 0, "ids":1}]);
+r.get("/srvGetOp/:id?", function (req, res, next) {
+	if (req.params.id) {
+		req.qpobj = {
+			fundTyp: "srvGetOpInfo"
+		};
+		mdb.qry("get", req, res, next, [
+			{"id": req.params.id}, {"_id":0, "id":1, "alia":1, "ec":1, "nam":1, "op":1}
+		]);
+	} else {
+		req.qpobj = {
+			fundTyp: "srvGetOp"
+		};
+		mdb.qry("get", req, res, next, [{"id": "opmask"}, {"_id": 0, "ids":1}]);
+	}
 });
 
 // 修改自选股

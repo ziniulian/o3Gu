@@ -4,15 +4,19 @@
 		<title>犟子工作室——股</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
 		<meta charset="utf-8" />
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="js/domain.js"></script>
 		<link rel="stylesheet" href="css/hdpan.css">
 	</head>
 
 	<body>
 		<div id="boso" class="boso">
 			<div class="logo">
-				<a class="logohome" href="/lzrhome"></a>
+				<a id="ahom" class="logohome" target="_blank"></a>
 			</div>
 			<center>
+				<br/><a href="opCheck.html">自选股查询</a><br/>
+				<br/><a href="opMgr.html">自选股管理</a><br/>
 				<br/><a href="rongzi.html">国债逆回购收益对比表</a><br/>
 				<br/><a href="hdpan.html">盘量分析</a><br/>
 				<br/><a href="baseCheck.html">基本面查询</a><br/>
@@ -23,6 +27,8 @@
 	</body>
 
 	<script type="text/javascript">
-		document.body.onload = init;
+		lzr_domain.getUrl("io_home", function (r) {
+			ahom.href = r;
+		});
 	</script>
 </html>

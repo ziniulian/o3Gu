@@ -27,11 +27,6 @@ srv.ro.get("/favicon.ico", function (req, res) {
 // 股
 srv.use("/Gu/", require("./Gu"));
 
-// 回首页
-srv.ro.get("/lzrhome/", function (req, res) {
-	res.redirect(utDma.get());
-});
-
 // 追踪器
 srv.ro.get("/trace.js", function (req, res) {
 	res.redirect(utDma.get() + "/js/trace.js");

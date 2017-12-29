@@ -239,9 +239,10 @@ var dat = {
 		dvv.innerHTML = dat.v;
 	},
 
-	reload: function (d) {
+	reload: function () {
+		var d = idDom.value.match(/\d{6}/);
 		if (d) {
-			dat.id = d;
+			dat.id = d[0];
 			dat.o = 0;
 			dat.c = 0;
 			dat.p = 0;
@@ -253,8 +254,10 @@ var dat = {
 			// tbs.innerHTML = "";
 			// tbb.innerHTML = "";
 			dat.ps = {};
-			dat.flush();
 		}
+		idDom.value = "";
+		idDom.blur();
+		dat.flush();
 	}
 }
 
@@ -274,7 +277,7 @@ function init() {
 				mark.className = "Lc_nosee";
 				dat.busy = false;
 			}
-			dat.flush();
+			dat.reload();
 		}
 	};
 

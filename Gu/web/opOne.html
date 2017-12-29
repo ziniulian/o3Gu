@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>自选股详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0" />
+		<meta charset="utf-8" />
+		<script type="text/javascript" src="/myLib/LZR.js"></script>
+		<script type="text/javascript" src="js/opOne.js"></script>
+		<link rel="stylesheet" href="css/hdpan.css">
+
+		<style type="text/css">
+		</style>
+	</head>
+
+	<body>
+		<div id="boso" class="boso">
+			<div class="logo">
+				<a class="logohome" href="opCheck.html"></a>
+			</div>
+			<div>
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<input id="dpDom" type="text" class="vTxt" placeholder="价格"></input>
+							</td>
+							<td class="k c"><a href="javascript: alert(1);"> 买 </a></td>
+						</tr>
+						<tr>
+							<td>
+								<input id="dvDom" type="text" class="vTxt" placeholder="数量"></input>
+							</td>
+							<td class="k c"><a href="javascript: alert(1);"> 卖 </a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<hr />
+			<div>
+				<table>
+					<tbody>
+						<tr>
+							<td class="k">成本价 ： </td>
+							<td id="pDom" class="v"></td>
+						</tr>
+						<tr>
+							<td class="k">数量 ： </td>
+							<td id="vDom" class="v"></td>
+						</tr>
+							<td class="k">止损 ： </td>
+							<td id="minDom" class="v"></td>
+						</tr>
+							<td class="k">止盈 ： </td>
+							<td id="maxDom" class="v"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<hr />
+			<div>
+				<table>
+					<tbody>
+						<tr>
+							<td class="k">量上限 ： </td>
+							<td class="v">
+								<input id="vmaxDom" type="text" class="vTxt"></input>
+							</td>
+						</tr>
+						<tr>
+							<td class="k">量下限 ： </td>
+							<td class="v">
+								<input id="vminDom" type="text" class="vTxt"></input>
+							</td>
+						</tr>
+						<tr>
+							<td class="k">理想价位 ： </td>
+							<td class="v">
+								<input id="p0Dom" type="text" class="vTxt"></input>
+							</td>
+						</tr>
+						<tr>
+							<td class="k">别名 ： </td>
+							<td class="v">
+								<input id="aliaDom" type="text" class="vTxt" placeholder="--"></input>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+
+	<script type="text/javascript">
+		document.body.onload = init;
+	</script>
+</html>

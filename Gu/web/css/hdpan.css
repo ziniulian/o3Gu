@@ -31,7 +31,7 @@ tr:hover {
 	background-color: #FF7;
 }
 
-tr, .r {
+tr {
 	line-height: 1.5;
 	text-align: right;
 }
@@ -80,6 +80,22 @@ tr, .r {
 	border: 0.2rem solid red;
 }
 
+.k {
+	width: 38.2%;
+	text-align: right;
+	line-height: 3;
+}
+
+.v {
+	text-align: left;
+	line-height: 3;
+}
+
+.vTxt {
+	width: 80%;
+	border-bottom: 0.1rem solid red;
+}
+
 /*---------------------- 公共样式库 ----------------------*/
 
 /*设置元素不可见*/
@@ -106,4 +122,12 @@ tr, .r {
 	-webkit-focus-ring-color: rgba(0, 0, 0, 0);
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
+}
+
+.c {
+	text-align: center;
+}
+
+.r {
+	text-align: right;
 }
