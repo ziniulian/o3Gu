@@ -1,4 +1,4 @@
-// 更新基本面数据
+// 基本面新增数据
 
 LZR.load([
 	"LZR.Base.Json",
@@ -33,12 +33,18 @@ var dat = {
 		var d = utJson.toObj(txt);
 		if (d.ok) {
 			d = d.dat;
-			var r = d[0].id;
-			for (var i = 1; i < d.length; i ++) {
-				r += ",";
-				r += d[i].id;
+			var r = "";
+			for (var i = 0; i < d.length; i ++) {
+				if (d[i].typ === 1) {
+					if (r) {
+						r += ",";
+					}
+					r += d[i].id;
+				}
 			}
-			location.href = "baseFlush.html?id=" + r;
+			if (r) {
+				location.href = "baseFlush.html?do=1&id=" + r;
+			}
 		}
 		dat.busy = false;
 	}

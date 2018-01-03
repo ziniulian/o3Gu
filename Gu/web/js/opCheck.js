@@ -58,6 +58,7 @@ var dat = {
 	getP: function () {
 		if (!dat.busy) {
 			dat.busy = true;
+			mark.className = "mark";
 			var url = "srvGetSinaK/" + dat.ids + "/1";
 			ajxP.get(url, true);
 		}
@@ -72,6 +73,7 @@ var dat = {
 				}
 			}
 		}
+		mark.className = "Lc_nosee";
 		dat.busy = false;
 	},
 
@@ -121,22 +123,22 @@ var dat = {
 
 			// 价
 			if (o.op.min) {
-				s = o.op.min + "<br />";
+				s = utMath.format(o.op.min, 2) + "<br />";
 				if (p <= o.op.min) {
 					o.pDom.className = "clrErr";
 				}
 			} else if (o.op.p0) {
-				s = o.op.p0 + "<br />";
+				s = utMath.format(o.op.p0, 2) + "<br />";
 				if (p <= o.op.p0) {
 					o.pDom.className = "clrGo";
 				}
 			} else {
 				s = "--<br />";
 			}
-			s += utMath.formatFloat(p, 2);
+			s += utMath.format(p, 2);
 			s += "<br />";
 			if (o.op.max) {
-				s += o.op.max;
+				s += utMath.format(o.op.max, 2);
 				if (p > o.op.max) {
 					o.pDom.className = "clrGo";
 				}
@@ -168,13 +170,13 @@ var dat = {
 
 			// 盈利
 			if (o.op.v) {
-				o.gainDom.innerHTML = utMath.formatFloat((p - o.op.p) * o.op.v * 100, 2);
+				o.gainDom.innerHTML = Math.floor((p - o.op.p) * o.op.v * 100);
 			} else {
 				o.gainDom.innerHTML = "--";
 			}
 		} else {
-			o.pDom.innerHTML = utMath.formatFloat(io[1], 2);
-			o.vDom.innerHTML = utMath.formatFloat(io[5] / 1000, 1);
+			o.pDom.innerHTML = utMath.format(io[1], 2);
+			o.vDom.innerHTML = utMath.format(io[5] / 1000, 1);
 		}
 		o.fDom.innerHTML = io[3] + "%";
 	}
@@ -193,6 +195,7 @@ function init() {
 			// 回车键
 			if (dat.busy) {
 				ajxP.abort();
+				mark.className = "Lc_nosee";
 				dat.busy = false;
 			}
 			dat.getP();

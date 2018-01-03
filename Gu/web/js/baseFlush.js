@@ -12,6 +12,7 @@ var utJson = LZR.getSingleton(LZR.Base.Json);
 var utUrl = LZR.getSingleton(LZR.HTML.Util.Url);
 var dat = {
 	busy: false,
+	doabl: false,
 	ids: [],
 	fs: [],		// 基本面任务组
 	fi: 0,		// 基本面任务标记
@@ -50,8 +51,10 @@ var dat = {
 			dat.crtS("P", 5);
 		}
 
-		// 执行任务
-		dat.do();
+		// 自动运行
+		if (dat.doabl) {
+			dat.do();
+		}
 	},
 
 	// 创建任务组
@@ -147,6 +150,9 @@ function init() {
 	ajxId.evt.rsp.add(dat.hdallId);
 	ajx.evt.rsp.add(dat.hddo);
 
+	if (r.do) {
+		dat.doabl = true;	// 可自动运行
+	}
 	if (r.np) {
 		dat.pi = -1;	// 取消参考价任务
 	}

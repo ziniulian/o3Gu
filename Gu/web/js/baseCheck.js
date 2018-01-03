@@ -53,7 +53,7 @@ var dat = {
 				dat.ds.push(o);
 			}
 			// console.log(dat.ds);
-			dat.qry("fa", true);
+			dat.qry("ta", true);
 		} else {
 			tbs.innerHTML = "<br />暂无数据";
 		}
@@ -149,11 +149,14 @@ function init() {
 		d.value = i;
 		secYear.appendChild(d);
 	}
-	if (m > 9) {
+	if (m > 10) {
 		m = 2;
-	} else if (m > 6) {
+	} else if (m < 2) {
+		m = 2;
+		j --;
+	} else if (m > 7) {
 		m = 1;
-	} else if (m > 3) {
+	} else if (m > 4) {
 		m = 0;
 	} else {
 		m = 3;
