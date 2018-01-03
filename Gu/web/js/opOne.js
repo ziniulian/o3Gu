@@ -3,165 +3,282 @@
 LZR.load([
 	"LZR.Base.Json",
 	"LZR.HTML.Base.Ajax",
-	"LZR.Base.Math"
+	"LZR.Base.Math",
+	"LZR.HTML.Util.Url"
 ]);
 
 var ajx = new LZR.HTML.Base.Ajax ();
+var ajxSav = new LZR.HTML.Base.Ajax ();
+var ajxP = new LZR.HTML.Base.Ajax ();
 var utJson = LZR.getSingleton(LZR.Base.Json);
 var utMath = LZR.getSingleton(LZR.Base.Math);
+var utUrl = LZR.getSingleton(LZR.HTML.Util.Url);
 var dat = {
-	busy: false,
-	fidld: null,	// 排序的栏位，初次排序统一从大到小排
-	sort: false,	// false，从大到小，true，从小到大
-	ds: null,
+	id: null,
+	memoTim: 0,
+	dp: 0,
+	dv: 0,
+	p: 0,
+	v: 0,
+	min: 0,
+	max: 0,
 
-	flush: function () {
-		if (!dat.busy) {
+	get: function () {
+		if (dat.id && !dat.busy) {
 			dat.busy = true;
-			var url = "srvGetByTim/" + secYear.value + "/" + secQuar.value;
+			var url = "srvGetOp/" + dat.id;
 			ajx.get(url, true);
 		}
 	},
 
-	hdflush: function (txt) {
-		var d = utJson.toObj(txt);
-		if (d.ok) {
-			dat.ds = [];
-			var t = d.msg;
-			var i, o, j, dd;
-			d = d.dat;
-			for (i = 0; i < d.length; i ++) {
-				dd = d[i];
-				o = {
-					id: dd.id,
-					nam: dd.nam
-				};
-				dd = dd.balance;
-				for (j = 0; j < dd.tim.length; j ++) {
-					if (dd.tim[j] == t) {
-						break;
-					}
+	hdget: function (txt, sta) {
+		var b = false;
+		if (sta === 200) {
+			var d = utJson.toObj(txt);
+			if (d.ok) {
+				d = d.dat[0];
+				dat.min = d.op.min;
+				dat.max = d.op.max;
+				dat.p = d.op.p;
+				dat.v = d.op.v;
+				dat.dp = dat.p;
+				dat.dv = dat.v;
+				namDom.innerHTML = d.nam + " ( " + d.id + " ) ";
+				p0Dom.value = d.op.p0;
+				vmaxDom.value = d.op.vmax;
+				vminDom.value = d.op.vmin;
+				if (d.alia) {
+					aliaDom.value = d.alia;
 				}
-				o.p = dd.p[j];
-				o.roe = dd.roe[j];
-				o.ass = dd.ass[j];
-				o.pf = dd.pf[j];
-				o.up = dd.up[j];
-				o.inc = dd.inc[j];
-				o.ta = utMath.formatFloat(o.ass - o.pf - o.up, 2);
-				o.fa = utMath.formatFloat(o.ass + o.pf + o.up, 2);
-				dat.ds.push(o);
+				dat.reset();
+				b = true;
 			}
-			// console.log(dat.ds);
-			dat.qry("fa", true);
-		} else {
-			tbs.innerHTML = "<br />暂无数据";
+		}
+		dat.busy = false;
+		if (b) {
+			dat.getP();
+		}
+	},
+
+	sav: function () {
+		if (dat.id && !dat.busy) {
+			dat.busy = true;
+			var url = "srvSetOp/" + dat.id + "/" + dat.dp + "/" + maxDom.value + "/" + minDom.value + "/" + dat.dv + "/" + vmaxDom.value + "/" + vminDom.value + "/" + p0Dom.value + "/" + aliaDom.value;
+			ajxSav.get(url, true);
+		}
+	},
+
+	hdsav: function (txt, sta) {
+		if (sta === 200) {
+			var d = utJson.toObj(txt);
+			if (d.ok) {
+				dat.p = d.dat.op.p;
+				dat.v = d.dat.op.v;
+				dat.min = d.dat.op.min;
+				dat.max = d.dat.op.max;
+				dat.memo ("保存成功");
+			} else {
+				dat.memo ("保存失败");
+			}
 		}
 		dat.busy = false;
 	},
 
-	show: function (o) {
-		var r = document.createElement("tr");
-		var d = document.createElement("td");
-		d.innerHTML = "<a href='baseOne.html?id=" + o.id + "'>" + o.id + "</a>";
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.nam;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.p;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.roe + "%";
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.ass;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.ta;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.fa;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.inc;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.pf;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.up;
-		r.appendChild(d);
-		tbs.appendChild(r);
+	// 信息提示
+	memo: function (msg, tim) {
+		if (!tim) {
+			tim = 2000;
+		}
+		dat.memoHid();
+		memoDom.innerHTML = msg;
+		dat.memoTim = setTimeout(function () {
+			memoDom.innerHTML = "";
+			dat.memoTim = 0;
+		}, tim);
 	},
 
-	qry: function (fid, redo) {
-		var i, j, t;
-		var d = document.getElementById(dat.fidld + "Sdom");
-		if (!redo && fid === dat.fidld) {
-			dat.sort = !dat.sort;
-		} else {
-			if (d) {
-				d.innerHTML = "";
-			}
-			dat.fidld = fid;
-			dat.sort = false;
-			d = document.getElementById(dat.fidld + "Sdom");
+	memoHid: function () {
+		if (dat.memoTim) {
+			clearTimeout(dat.memoTim);
+			memoDom.innerHTML = "";
+			dat.memoTim = 0;
+		}
+	},
 
-			// 从大到小的排序
-			for (i = dat.ds.length; i > 1; i --) {
-				for (j = 1; j < i; j ++) {
-					if (dat.ds[j - 1][fid] < dat.ds[j][fid]) {
-						t = dat.ds[j];
-						dat.ds[j] = dat.ds[j - 1];
-						dat.ds[j - 1] = t;
-					}
-				}
+	buy: function () {
+		var p = dpDom.value - 0;
+		var v = dvDom.value - 0;
+		var t;
+		dpDom.value = "";
+		dvDom.value = "";
+		if (p && v) {
+			t = dat.dp * dat.dv + p * v * 1.01;
+			dat.dv += v;
+			dat.dp = utMath.formatFloat(t / dat.dv + 0.01, 2);
+			pDom.innerHTML = dat.dp;
+			vDom.innerHTML = dat.dv;
+			basDom.value = dat.dp;
+		}
+	},
+
+	sell: function () {
+		var p = dpDom.value - 0;
+		var v = dvDom.value - 0;
+		var t;
+		dpDom.value = "";
+		dvDom.value = "";
+		if (v) {
+			if (v >= dat.dv) {
+				dat.dv = 0;
+				dat.dp = 0;
+				dat.set(0);
+				basDom.value = "";
+			} else if (p && p < dat.dp) {
+				t = (dat.dp - p) * v;
+				dat.dv = utMath.formatFloat(dat.dv - v, 2);
+				dat.dp = utMath.formatFloat(t / dat.dv + dat.dp + 0.01, 2);
+				basDom.value = dat.dp;
+			} else {
+				dat.dv = utMath.formatFloat(dat.dv - v, 2);
 			}
+			pDom.innerHTML = dat.dp;
+			vDom.innerHTML = dat.dv;
+		}
+	},
+
+	set: function (v) {
+		if (!v) {
+			sminDom.innerHTML = "止损 ： ";
+			smaxDom.innerHTML = "止盈 ： ";
+			maxDom.value = 0;
+			minDom.value = 0;
+			return;
 		}
 
-		// 刷新页面
-		tbs.innerHTML = "";
-		if (dat.sort) {
-			d.innerHTML = "↑";
-			for (i = dat.ds.length - 1; i >= 0; i --) {
-				dat.show(dat.ds[i]);
+		var p = basDom.value - 0;
+		var min, max, x = 0;
+		if (p) {
+			switch (v) {
+				case 1:
+					max = 2;
+					min = -2;
+					break;
+				case 2:
+					max = 3;
+					min = -1;
+					break;
+				case 3:
+					max = 4;
+					min = 0;
+					break;
+				case 4:
+					max = 7;
+					min = 1;
+					break;
+				case 5:
+					max = 11;
+					min = 5;
+					break;
+				case 6:
+					max = 13;
+					min = 7;
+					break;
+				case 7:
+					max = 19;
+					min = 10;
+					break;
+				case 8:
+					max = 25;
+					min = 15;
+					break;
+				case 9:
+					max = 34;
+					min = 20;
+					break;
+				case 10:
+					max = 58;
+					min = 24;
+					x = -10;
+					break;
+				case 11:
+					max = 77;
+					min = 50;
+					break;
+				case 12:
+					max = 111;
+					min = 62;
+					x = -15;
+					break;
+				case 13:
+					max = 122;
+					min = 100;
+					break;
+				case 14:
+					max = 0;
+					min = 112;
+					x = -10;
+					break;
 			}
-		} else {
-			d.innerHTML = "↓";
-			for (i = 0; i < dat.ds.length; i ++) {
-				dat.show(dat.ds[i]);
+
+			// 止损
+			if (x) {
+				sminDom.innerHTML = "(相对" + x + "%)止损 ： ";
+			} else {
+				sminDom.innerHTML = "(" + min + "%)止损 ： ";
+			}
+			minDom.value = utMath.formatFloat(p * (min / 100 + 1), 2);
+
+			// 止盈
+			if (max) {
+				smaxDom.innerHTML = "(" + max + "%)止盈 ： ";
+				maxDom.value = utMath.formatFloat(p * (max / 100 + 1), 2);
+			} else {
+				smaxDom.innerHTML = "(不封顶)止盈 ： ";
+				maxDom.value = 0;
 			}
 		}
+	},
+
+	reset: function () {
+		pDom.innerHTML = dat.p;
+		vDom.innerHTML = dat.v;
+		minDom.value = dat.min;
+		maxDom.value = dat.max;
+		sminDom.innerHTML = "止损 ： ";
+		smaxDom.innerHTML = "止盈 ： ";
+		if (dat.p) {
+			basDom.value = dat.p;
+		} else {
+			basDom.value = "";
+		}
+		dat.getP();
+	},
+
+	getP: function () {
+		if (dat.id && !dat.busy) {
+			dat.busy = true;
+			var url = "srvGetSinaK/" + dat.id + "/1";
+			ajxP.get(url, true);
+		}
+	},
+
+	hdgetP: function (txt, sta) {
+		if (sta === 200) {
+			var d = utJson.toObj(txt);
+			if (d.ok) {
+				vpDom.innerHTML = d.dat[dat.id].split(",")[1];
+			}
+		}
+		dat.busy = false;
 	}
-}
+
+};
 
 function init() {
-	var t = new Date();
-	var y = t.getFullYear();
-	var m = t.getMonth();
-	var i, d, j = 0;
-
-	// 初始化选项
-	for (i = 2016, j = -1; i <= y; i ++, j++) {
-		d = document.createElement("option");
-		d.innerHTML = i + "年";
-		d.value = i;
-		secYear.appendChild(d);
-	}
-	if (m > 9) {
-		m = 2;
-	} else if (m > 6) {
-		m = 1;
-	} else if (m > 3) {
-		m = 0;
-	} else {
-		m = 3;
-		j --;
-	}
-	secYear[j].selected = true;
-	secQuar[m].selected = true;
-
-	ajx.evt.rsp.add(dat.hdflush);
-	dat.flush();
+	var r = utUrl.getRequest();
+	dat.id = r.id;
+	ajx.evt.rsp.add(dat.hdget);
+	ajxP.evt.rsp.add(dat.hdgetP);
+	ajxSav.evt.rsp.add(dat.hdsav);
+	dat.get();
 }

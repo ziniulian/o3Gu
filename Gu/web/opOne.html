@@ -15,22 +15,70 @@
 	<body>
 		<div id="boso" class="boso">
 			<div class="logo">
+				<a id="namDom" href="javascript: dat.reset();"></a>
+				&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a href="javascript: dat.sav();">保存</a>
 				<a class="logohome" href="opCheck.html"></a>
 			</div>
 			<div>
 				<table>
 					<tbody>
 						<tr>
-							<td>
-								<input id="dpDom" type="text" class="vTxt" placeholder="价格"></input>
+							<td class="k" id="sminDom">止损 ： </td>
+							<td class="v">
+								<input id="minDom" type="text" class="vTxt"></input>
 							</td>
-							<td class="k c"><a href="javascript: alert(1);"> 买 </a></td>
+						</tr>
+						<tr>
+							<td class="k" id="smaxDom">止盈 ： </td>
+							<td class="v">
+								<input id="maxDom" type="text" class="vTxt"></input>
+							</td>
+						</tr>
+						<tr>
+							<td class="k c">
+								<input id="basDom" type="text" class="vTxt" placeholder="基价"></input>
+							</td>
+							<td class="v c">
+								<a href="javascript: dat.set(0);">V0</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(1);">V1</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(2);">V2</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(3);">V3</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(4);">V4</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(5);">V5</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(6);">V6</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(7);">V7</a>
+							</td>
+						</tr>
+						<tr>
+							<td id="vpDom" class="k c"></td>
+							<td class="v c">
+								<a href="javascript: dat.set(8);">V8</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(9);">V9</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(10);">V10</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(11);">V11</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(12);">V12</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(13);">V13</a>&nbsp;&nbsp;&nbsp;
+								<a href="javascript: dat.set(14);">V14</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<hr />
+			<div>
+				<table>
+					<tbody>
+						<tr>
+							<td>
+								<input id="dvDom" type="text" class="vTxt" placeholder="数量" autofocus="autofocus"></input>
+							</td>
+							<td class="k c"><a href="javascript: dat.sell();"> 卖 </a></td>
 						</tr>
 						<tr>
 							<td>
-								<input id="dvDom" type="text" class="vTxt" placeholder="数量"></input>
+								<input id="dpDom" type="text" class="vTxt" placeholder="价格"></input>
 							</td>
-							<td class="k c"><a href="javascript: alert(1);"> 卖 </a></td>
+							<td class="k c"><a href="javascript: dat.buy();"> 买 </a></td>
 						</tr>
 					</tbody>
 				</table>
@@ -47,19 +95,6 @@
 							<td class="k">数量 ： </td>
 							<td id="vDom" class="v"></td>
 						</tr>
-							<td class="k">止损 ： </td>
-							<td id="minDom" class="v"></td>
-						</tr>
-							<td class="k">止盈 ： </td>
-							<td id="maxDom" class="v"></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			<hr />
-			<div>
-				<table>
-					<tbody>
 						<tr>
 							<td class="k">量上限 ： </td>
 							<td class="v">
@@ -73,7 +108,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td class="k">理想价位 ： </td>
+							<td class="k">理想价 ： </td>
 							<td class="v">
 								<input id="p0Dom" type="text" class="vTxt"></input>
 							</td>
@@ -87,6 +122,7 @@
 					</tbody>
 				</table>
 			</div>
+			<div id="memoDom" class="memo" onclick="dat.memoHid();"></div>
 		</div>
 	</body>
 

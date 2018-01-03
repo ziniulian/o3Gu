@@ -370,8 +370,9 @@ mdb.evt.get.add(function (r, req, res, next) {
 		case "srvGetOp":
 			if (r.length) {
 				req.qpobj.fundTyp = "srvGetOpInfo";
+				req.qpobj.msg = r[0].ids;
 				mdb.qry("get", req, res, next, [
-					{"id": {"$in": r[0].ids}}, {"_id":0, "id":1, "alia":1, "ec":1, "nam":1, "op":1}
+					{"id": {"$in": r[0].ids}}, {"_id":0, "id":1, "alia":1, "ec":1, "nam":1, "op":1, "typ":1}
 				]);
 			} else {
 				mdb.qry("add", req, res, next, [[{"id": "opmask", "ids": []}]]);
@@ -380,10 +381,10 @@ mdb.evt.get.add(function (r, req, res, next) {
 			break;
 		case "srvAddOp":
 			if (r.length) {
-				if (!r[0].op) {
+				if (!r[0].op && (r[0].typ === 1)) {
 					mdb.qry("set", req, res, next, [
 						{"id": r[0].id},
-						{"$set":{"op":{"p":0,"max":0,"min":0,"v":0,"vmax":0,"vmin":0,"p0":0}}}
+						{"$set":{"op":{"p":0,"max":0,"min":0,"v":0,"vmax":0,"vmin":0,"p0":0}, "alia": ""}}
 					]);
 				}
 				mdb.qry("set", req, res, next, [{"id": "opmask"}, {"$addToSet": {"ids": r[0].id}}]);
@@ -464,7 +465,7 @@ r.get("/srvGetOp/:id?", function (req, res, next) {
 			fundTyp: "srvGetOpInfo"
 		};
 		mdb.qry("get", req, res, next, [
-			{"id": req.params.id}, {"_id":0, "id":1, "alia":1, "ec":1, "nam":1, "op":1}
+			{"id": req.params.id}, {"_id":0, "id":1, "alia":1, "ec":1, "nam":1, "op":1, "typ":1}
 		]);
 	} else {
 		req.qpobj = {
@@ -477,6 +478,7 @@ r.get("/srvGetOp/:id?", function (req, res, next) {
 // 修改自选股
 r.get("/srvSetOp/:id/:p/:max/:min/:v/:vmax/:vmin/:p0/:alia?", function (req, res, next) {
 	var o = {
+		alia: req.params.alia ? req.params.alia : "",
 		op: {
 			p: req.params.p - 0,
 			max: req.params.max - 0,
@@ -487,9 +489,6 @@ r.get("/srvSetOp/:id/:p/:max/:min/:v/:vmax/:vmin/:p0/:alia?", function (req, res
 			p0: req.params.p0 - 0
 		}
 	};
-	if (req.params.alia) {
-		o.alia = req.params.alia;
-	}
 	mdb.qry("set", req, res, next, [{"id":req.params.id}, {"$set": o}]);
 	res.json(tools.clsR.get(o));
 });
@@ -499,7 +498,7 @@ r.get("/srvAddOp/:id", function (req, res, next) {
 	req.qpobj = {
 		fundTyp: "srvAddOp"
 	};
-	mdb.qry("get", req, res, next, [{"id":req.params.id}, {"_id":0, "id":1, "op":1}]);
+	mdb.qry("get", req, res, next, [{"id":req.params.id}, {"_id":0, "id":1, "op":1, "typ":1}]);
 });
 
 // 删除自选股

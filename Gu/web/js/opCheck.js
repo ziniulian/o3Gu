@@ -7,161 +7,197 @@ LZR.load([
 ]);
 
 var ajx = new LZR.HTML.Base.Ajax ();
+var ajxP = new LZR.HTML.Base.Ajax ();
 var utJson = LZR.getSingleton(LZR.Base.Json);
 var utMath = LZR.getSingleton(LZR.Base.Math);
 var dat = {
-	busy: false,
-	fidld: null,	// 排序的栏位，初次排序统一从大到小排
-	sort: false,	// false，从大到小，true，从小到大
-	ds: null,
+	ds: {},
+	da: [],
+	ids: "",
 
-	flush: function () {
+	get: function () {
 		if (!dat.busy) {
 			dat.busy = true;
-			var url = "srvGetByTim/" + secYear.value + "/" + secQuar.value;
+			var url = "srvGetOp/";
 			ajx.get(url, true);
 		}
 	},
 
-	hdflush: function (txt) {
-		var d = utJson.toObj(txt);
-		if (d.ok) {
-			dat.ds = [];
-			var t = d.msg;
-			var i, o, j, dd;
-			d = d.dat;
-			for (i = 0; i < d.length; i ++) {
-				dd = d[i];
-				o = {
-					id: dd.id,
-					nam: dd.nam
-				};
-				dd = dd.balance;
-				for (j = 0; j < dd.tim.length; j ++) {
-					if (dd.tim[j] == t) {
-						break;
+	hdget: function (txt, sta) {
+		var b = false;
+		var i, d, o, s;
+		if (sta === 200) {
+			d = utJson.toObj(txt);
+			if (d.ok) {
+				dat.da = d.msg;
+				s = "";
+				for (i = 0; i < d.dat.length; i ++) {
+					o = d.dat[i];
+					dat.ds[o.id] = o;
+					if (i) {
+						s += ",";
 					}
+					s += o.id;
 				}
-				o.p = dd.p[j];
-				o.roe = dd.roe[j];
-				o.ass = dd.ass[j];
-				o.pf = dd.pf[j];
-				o.up = dd.up[j];
-				o.inc = dd.inc[j];
-				o.ta = utMath.formatFloat(o.ass - o.pf - o.up, 2);
-				o.fa = utMath.formatFloat(o.ass + o.pf + o.up, 2);
-				dat.ds.push(o);
+				dat.ids = s;
+				for (i = 0; i < dat.da.length; i ++) {
+					dat.show(dat.ds[dat.da[i]]);
+				}
+				b = true;
 			}
-			// console.log(dat.ds);
-			dat.qry("fa", true);
-		} else {
-			tbs.innerHTML = "<br />暂无数据";
+		}
+		dat.busy = false;
+		if (b) {
+// console.log(dat.ids);
+// console.log(dat.ds);
+// console.log(dat.da);
+			dat.getP();
+		}
+	},
+
+	getP: function () {
+		if (!dat.busy) {
+			dat.busy = true;
+			var url = "srvGetSinaK/" + dat.ids + "/1";
+			ajxP.get(url, true);
+		}
+	},
+
+	hdgetP: function (txt, sta) {
+		if (sta === 200) {
+			var d = utJson.toObj(txt);
+			if (d.ok) {
+				for (var s in d.dat) {
+					dat.showP(s, d.dat[s].split(","));
+				}
+			}
 		}
 		dat.busy = false;
 	},
 
 	show: function (o) {
+// console.log(o);
 		var r = document.createElement("tr");
 		var d = document.createElement("td");
-		d.innerHTML = "<a href='baseOne.html?id=" + o.id + "'>" + o.id + "</a>";
+		var s;
+
+		// 名称
+		if (o.alia) {
+			d.innerHTML = o.typ ? "<a href='opOne.html?id=" + o.id + "'>" + o.alia + "</a>" : o.alia;
+		} else {
+			d.innerHTML = o.typ ? "<a href='opOne.html?id=" + o.id + "'>" + o.nam + "</a>" : o.nam;
+		}
 		r.appendChild(d);
+
+		// 盈利
 		d = document.createElement("td");
-		d.innerHTML = o.nam;
+		o.gainDom = d;
 		r.appendChild(d);
+
+		// 价
 		d = document.createElement("td");
-		d.innerHTML = o.p;
+		o.pDom = d;
 		r.appendChild(d);
+
+		// 量
 		d = document.createElement("td");
-		d.innerHTML = o.roe + "%";
+		o.vDom = d;
 		r.appendChild(d);
+
+		// 幅度
 		d = document.createElement("td");
-		d.innerHTML = o.ass;
+		o.fDom = d;
 		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.ta;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.fa;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.inc;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.pf;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.up;
-		r.appendChild(d);
+
 		tbs.appendChild(r);
 	},
 
-	qry: function (fid, redo) {
-		var i, j, t;
-		var d = document.getElementById(dat.fidld + "Sdom");
-		if (!redo && fid === dat.fidld) {
-			dat.sort = !dat.sort;
-		} else {
-			if (d) {
-				d.innerHTML = "";
-			}
-			dat.fidld = fid;
-			dat.sort = false;
-			d = document.getElementById(dat.fidld + "Sdom");
+	showP: function (id, io) {
+		var o = dat.ds[id];
+		var p, v, s;
+		if (o.op) {
+			p = io[1]-0;
+			v = io[4]-0;
 
-			// 从大到小的排序
-			for (i = dat.ds.length; i > 1; i --) {
-				for (j = 1; j < i; j ++) {
-					if (dat.ds[j - 1][fid] < dat.ds[j][fid]) {
-						t = dat.ds[j];
-						dat.ds[j] = dat.ds[j - 1];
-						dat.ds[j - 1] = t;
-					}
+			// 价
+			if (o.op.min) {
+				s = o.op.min + "<br />";
+				if (p <= o.op.min) {
+					o.pDom.className = "clrErr";
 				}
+			} else if (o.op.p0) {
+				s = o.op.p0 + "<br />";
+				if (p <= o.op.p0) {
+					o.pDom.className = "clrGo";
+				}
+			} else {
+				s = "--<br />";
 			}
-		}
+			s += utMath.formatFloat(p, 2);
+			s += "<br />";
+			if (o.op.max) {
+				s += o.op.max;
+				if (p > o.op.max) {
+					o.pDom.className = "clrGo";
+				}
+			} else {
+				s += "--";
+			}
+			o.pDom.innerHTML = s;
 
-		// 刷新页面
-		tbs.innerHTML = "";
-		if (dat.sort) {
-			d.innerHTML = "↑";
-			for (i = dat.ds.length - 1; i >= 0; i --) {
-				dat.show(dat.ds[i]);
+			// 量
+			if (o.op.vmin) {
+				s = o.op.vmin + "<br />";
+				if (v < o.op.vmin) {
+					o.vDom.className = "clrGo";
+				}
+			} else {
+				s = "--<br />";
+			}
+			s += io[4];
+			s += "<br />";
+			if (o.op.vmax) {
+				s += o.op.vmax;
+				if (v > o.op.vmax) {
+					o.vDom.className = "clrErr";
+				}
+			} else {
+				s += "--";
+			}
+			o.vDom.innerHTML = s;
+
+			// 盈利
+			if (o.op.v) {
+				o.gainDom.innerHTML = utMath.formatFloat((p - o.op.p) * o.op.v * 100, 2);
+			} else {
+				o.gainDom.innerHTML = "--";
 			}
 		} else {
-			d.innerHTML = "↓";
-			for (i = 0; i < dat.ds.length; i ++) {
-				dat.show(dat.ds[i]);
-			}
+			o.pDom.innerHTML = utMath.formatFloat(io[1], 2);
+			o.vDom.innerHTML = utMath.formatFloat(io[5] / 1000, 1);
 		}
+		o.fDom.innerHTML = io[3] + "%";
 	}
-}
+
+};
 
 function init() {
-	var t = new Date();
-	var y = t.getFullYear();
-	var m = t.getMonth();
-	var i, d, j = 0;
+	ajx.evt.rsp.add(dat.hdget);
+	ajxP.evt.rsp.add(dat.hdgetP);
 
-	// 初始化选项
-	for (i = 2016, j = -1; i <= y; i ++, j++) {
-		d = document.createElement("option");
-		d.innerHTML = i + "年";
-		d.value = i;
-		secYear.appendChild(d);
-	}
-	if (m > 9) {
-		m = 2;
-	} else if (m > 6) {
-		m = 1;
-	} else if (m > 3) {
-		m = 0;
-	} else {
-		m = 3;
-		j --;
-	}
-	secYear[j].selected = true;
-	secQuar[m].selected = true;
+	document.onkeyup = function (e) {
+		if (e.keyCode === 32) {
+			// 空格
+			dat.getP();
+		} else if (e.keyCode === 13) {
+			// 回车键
+			if (dat.busy) {
+				ajxP.abort();
+				dat.busy = false;
+			}
+			dat.getP();
+		}
+	};
 
-	ajx.evt.rsp.add(dat.hdflush);
-	dat.flush();
+	dat.get();
 }

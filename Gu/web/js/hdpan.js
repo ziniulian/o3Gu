@@ -48,6 +48,15 @@ var dat = {
 				dat.hd2(d["000000"].split(","), "sh");
 				dat.hd2(d["399001"].split(","), "sz");
 			}
+
+			// 定位
+			d = boso.clientHeight - tbb.clientHeight - dvv.clientHeight;	// tbb 的顶部位置
+			o = Math.floor(document.body.clientHeight / 2);	// 窗口一半的高度
+			if (d > o) {
+				window.scrollTo(0, d - o);
+			} else {
+				window.scrollTo(0, 0);
+			}
 		}
 		mark.className = "Lc_nosee";
 		dat.busy = false;

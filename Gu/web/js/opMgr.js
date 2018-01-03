@@ -23,10 +23,19 @@ var dat = {
 
 	hdflush: function (txt) {
 		var d = utJson.toObj(txt);
+		var i, j, id;
 		if (d.ok) {
-			d = d.dat;
-			for (i = 0; i < d.length; i ++) {
-				dat.show(d[i]);
+			for (i = 0; i < d.dat.length; i ++) {
+				id = d.dat[i].id;
+				for (j = 0; j < d.msg.length; j ++) {
+					if (d.msg[j] === id) {
+						d.msg[j] = d.dat[i];
+						break;
+					}
+				}
+			}
+			for (i = 0; i < d.msg.length; i ++) {
+				dat.show(d.msg[i]);
 			}
 		} else {
 			tbs.innerHTML = "<br />暂无数据";
@@ -37,7 +46,11 @@ var dat = {
 	show: function (o) {
 		var r = document.createElement("tr");
 		var d = document.createElement("td");
-		d.innerHTML = "<a href='opOne.html?id=" + o.id + "'>" + o.id + "</a>";
+		if (o.typ === 1) {
+			d.innerHTML = "<a href='opOne.html?id=" + o.id + "'>" + o.id + "</a>";
+		} else {
+			d.innerHTML = "<a>" + o.id + "</a>";
+		}
 		r.appendChild(d);
 		d = document.createElement("td");
 		d.innerHTML = o.nam;
