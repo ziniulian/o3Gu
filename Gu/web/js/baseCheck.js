@@ -7,13 +7,32 @@ LZR.load([
 ]);
 
 var ajx = new LZR.HTML.Base.Ajax ();
+var ajxC = new LZR.HTML.Base.Ajax ();
 var utJson = LZR.getSingleton(LZR.Base.Json);
 var utMath = LZR.getSingleton(LZR.Base.Math);
 var dat = {
 	busy: false,
+	count: 0,
 	fidld: null,	// 排序的栏位，初次排序统一从大到小排
 	sort: false,	// false，从大到小，true，从小到大
 	ds: null,
+
+	getCount: function () {
+		if (!dat.busy) {
+			dat.busy = true;
+			var url = "srvGetCount/";
+			ajxC.get(url, true);
+		}
+	},
+
+	hdgetCount: function (txt) {
+		var d = utJson.toObj(txt);
+		if (d.ok) {
+			dat.count = d.dat;
+		}
+		dat.busy = false;
+		dat.flush();
+	},
 
 	flush: function () {
 		if (!dat.busy) {
@@ -30,6 +49,7 @@ var dat = {
 			var t = d.msg;
 			var i, o, j, dd;
 			d = d.dat;
+			countDom.innerHTML = d.length + "/" + dat.count;
 			for (i = 0; i < d.length; i ++) {
 				dd = d[i];
 				o = {
@@ -55,6 +75,7 @@ var dat = {
 			// console.log(dat.ds);
 			dat.qry("ta", true);
 		} else {
+			countDom.innerHTML = "0/" + dat.count;
 			tbs.innerHTML = "<br />暂无数据";
 		}
 		dat.busy = false;
@@ -166,5 +187,6 @@ function init() {
 	secQuar[m].selected = true;
 
 	ajx.evt.rsp.add(dat.hdflush);
-	dat.flush();
+	ajxC.evt.rsp.add(dat.hdgetCount);
+	dat.getCount();
 }

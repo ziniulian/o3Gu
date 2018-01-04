@@ -328,7 +328,7 @@ ajax.evt.fundPrice.add(function (r, req, res, next) {
 	var e;
 	for (var i = 0; i < (o.length - 1); i ++) {
 		e = /^.*(\d{6})="[^,]*,([\d\.]*).*";*$/.exec(o[i]);
-		if (e) {
+		if (e && (e[2] - 0)) {
 			mdb.qry("set", req, res, next, [ {"id": e[1]}, {"$set": {"balance.p.0": (e[2] - 0)}} ]);
 			a[e[1]] = e[2];
 		}
@@ -346,6 +346,13 @@ var mdb = new LZR.Node.Db.Mongo ({
 			funs: {
 				find: ["<0>", "<1>"],
 				toArray: []
+			}
+		},
+
+		count: {
+			tnam: "gu",
+			funs: {
+				count: ["<0>"]
 			}
 		},
 
@@ -437,6 +444,10 @@ mdb.evt.get.add(function (r, req, res, next) {
 			}
 			break;
 	}
+});
+
+mdb.evt.count.add(function (r, req, res, next) {
+	res.json(tools.clsR.get(r));
 });
 
 // 创建路由
@@ -546,6 +557,11 @@ r.get("/srvGetAllIds", function (req, res, next) {
 	mdb.qry("get", req, res, next, [
 		{"typ": 1}, {"_id": 0, "id": 1}
 	]);
+});
+
+// 获取代码总数
+r.get("/srvGetCount", function (req, res, next) {
+	mdb.qry("count", req, res, next, [{"typ": 1}]);
 });
 
 // 更新基本面信息

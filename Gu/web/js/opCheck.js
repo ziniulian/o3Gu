@@ -40,7 +40,12 @@ var dat = {
 					s += o.id;
 				}
 				dat.ids = s;
-				for (i = 0; i < dat.da.length; i ++) {
+
+				dat.show(dat.ds[dat.da[0]]);
+				for (i = 1; i < dat.da.length; i ++) {
+					o = document.createElement("tr");
+					o.innerHTML = "<td class='tline' /><td class='tline' /><td class='tline' /><td class='tline' /><td class='tline' />";
+					tbs.appendChild(o);
 					dat.show(dat.ds[dat.da[i]]);
 				}
 				b = true;
@@ -48,9 +53,6 @@ var dat = {
 		}
 		dat.busy = false;
 		if (b) {
-// console.log(dat.ids);
-// console.log(dat.ds);
-// console.log(dat.da);
 			dat.getP();
 		}
 	},

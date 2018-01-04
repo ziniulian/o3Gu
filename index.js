@@ -4,11 +4,11 @@ require("lzr");
 // LZR 子模块加载
 LZR.load([
 	"LZR.Node.Srv",
-	"LZR.Node.Srv.DomainSrv"
+	"LZR.HTML"
 ]);
 
-// 域名服务
-var utDma = LZR.getSingleton(LZR.Node.Srv.DomainSrv);
+// 主域名
+var mdm = LZR.HTML.domain;
 
 // 服务的实例化
 var srv = new LZR.Node.Srv ({
@@ -21,7 +21,7 @@ srv.ro.setStaticDir("/myLib/", LZR.curPath);
 
 // LOGO图片
 srv.ro.get("/favicon.ico", function (req, res) {
-	res.redirect(utDma.get() + "/favicon.ico");
+	res.redirect(mdm + "/favicon.ico");
 });
 
 // 股
@@ -29,12 +29,12 @@ srv.use("/Gu/", require("./Gu"));
 
 // 追踪器
 srv.ro.get("/trace.js", function (req, res) {
-	res.redirect(utDma.get() + "/js/trace.js");
+	res.redirect(mdm + "/js/trace.js");
 });
 
 // 收尾处理
 srv.use("*", function (req, res) {
-	res.redirect(utDma.get() + "/Err");
+	res.redirect(mdm + "/Err");
 });
 
 // 服务启动
