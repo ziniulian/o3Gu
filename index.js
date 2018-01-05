@@ -7,8 +7,10 @@ LZR.load([
 	"LZR.HTML"
 ]);
 
-// 主域名
-var mdm = LZR.HTML.domain;
+// 域名
+var dmsrv = {
+	main: LZR.HTML.domain
+};
 
 // 服务的实例化
 var srv = new LZR.Node.Srv ({
@@ -21,7 +23,7 @@ srv.ro.setStaticDir("/myLib/", LZR.curPath);
 
 // LOGO图片
 srv.ro.get("/favicon.ico", function (req, res) {
-	res.redirect(mdm + "/favicon.ico");
+	res.redirect(dmsrv.main + "/favicon.ico");
 });
 
 // 股
@@ -29,12 +31,12 @@ srv.use("/Gu/", require("./Gu"));
 
 // 追踪器
 srv.ro.get("/trace.js", function (req, res) {
-	res.redirect(mdm + "/js/trace.js");
+	res.redirect(dmsrv.main + "/js/trace.js");
 });
 
 // 收尾处理
 srv.use("*", function (req, res) {
-	res.redirect(mdm + "/Err");
+	res.redirect(dmsrv.main + "/Err");
 });
 
 // 服务启动

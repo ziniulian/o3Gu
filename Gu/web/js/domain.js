@@ -3,9 +3,13 @@ LZR.load([
 ]);
 
 var lzr_domain = {
-	getUrl: function (key, cb) {
-		if (key) {
-			var url = LZR.HTML.domain + "/Domain/srvGet/" + key;
+	urls: {
+		main: LZR.HTML.domain
+	},
+
+	getUrl: function (ids, cb) {
+		if (ids) {
+			var url = LZR.HTML.domain + "/Domain/srvGet/" + ids;
 			var ajx = new LZR.HTML.Base.Ajax ();
 			ajx.evt.rsp.add(LZR.bind(ajx, lzr_domain.hdUrl, cb));
 			ajx.get(url, true);
@@ -15,13 +19,13 @@ var lzr_domain = {
 	},
 
 	hdUrl: function (cb, txt, sta) {
-		var r = "";
 		if (sta === 200) {
 			var d = this.utJson.toObj(txt);
 			if (d.ok) {
-				r = d.dat;
+				d.dat.main = LZR.HTML.domain;
+				lzr_domain.urls = d.dat;
 			}
 		}
-		cb(r);
+		cb(lzr_domain.urls);
 	}
 };

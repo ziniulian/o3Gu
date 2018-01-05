@@ -12,6 +12,10 @@ html, body {
 /*取消a链接默认样式*/
 a{
 	text-decoration:none;
+	color: #00F;
+}
+a:hover {
+	font-weight: bold;
 }
 
 /*取消下拉框、输入框默认样式*/
@@ -100,6 +104,18 @@ hr {
 	border-bottom: 0.1rem solid #F00;
 }
 
+.l {
+	text-align: left;
+}
+
+.c {
+	text-align: center;
+}
+
+.r {
+	text-align: right;
+}
+
 .memo {
 	cursor: pointer;
 	position: fixed;
@@ -108,18 +124,6 @@ hr {
 	/* padding: 1rem; */
 	/* background-color: #FFF; */
 	color: #F00;
-}
-
-.clrGo {
-	color: #6A0;
-}
-
-.clrErr {
-	color: #F50;
-}
-
-.tline {
-	background-color: #EEE;
 }
 
 /*---------------------- 公共样式库 ----------------------*/
@@ -148,12 +152,4 @@ hr {
 	-webkit-focus-ring-color: rgba(0, 0, 0, 0);
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
-}
-
-.c {
-	text-align: center;
-}
-
-.r {
-	text-align: right;
 }

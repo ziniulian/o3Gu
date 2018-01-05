@@ -84,7 +84,7 @@ var dat = {
 	show: function (o) {
 		var r = document.createElement("tr");
 		var d = document.createElement("td");
-		d.innerHTML = "<a href='baseOne.html?id=" + o.id + "'>" + o.id + "</a>";
+		d.innerHTML = "<a target='_blank' href='baseOne.html?id=" + o.id + "'>" + o.id + "</a>";
 		r.appendChild(d);
 		d = document.createElement("td");
 		d.innerHTML = o.nam;

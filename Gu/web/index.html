@@ -6,7 +6,8 @@
 		<meta charset="utf-8" />
 		<script type="text/javascript" src="/myLib/LZR.js"></script>
 		<script type="text/javascript" src="js/domain.js"></script>
-		<link rel="stylesheet" href="css/hdpan.css">
+		<script type="text/javascript" src="/trace.js"></script>
+		<link rel="stylesheet" href="css/base.css">
 	</head>
 
 	<body>
@@ -22,13 +23,17 @@
 				<br/><a href="opMgr.html">自选股管理</a><br/>
 				<br/><a href="baseAdd.html">基本面新增数据</a><br/>
 				<br/><a href="baseFlush.html">更新基本面数据</a><br/>
+				<br/><a target="_blank" href="http://q.stock.sohu.com/cn/dxph_jzc.shtml">搜狐净资产排行</a><br/>
+				<br/><a target="_blank" href="http://q.stock.sohu.com/cn/dxph_zcsy.shtml">搜狐净资产收益率排行</a><br/>
+				<br/><a target="_blank" href="http://q.stock.sohu.com/cn/dxph_wfp.shtml">搜狐未分配利润排行</a><br/>
+				<br/><a target="_blank" href="http://q.stock.sohu.com/cn/dxph_gjj.shtml">搜狐资本公积金排行</a><br/>
 			</center>
 		</div>
 	</body>
 
 	<script type="text/javascript">
 		lzr_domain.getUrl("io_home", function (r) {
-			ahom.href = r;
+			ahom.href = r.io_home;
 		});
 	</script>
 </html>
