@@ -242,6 +242,8 @@ var dat = {
 	reset: function () {
 		pDom.innerHTML = dat.p;
 		vDom.innerHTML = dat.v;
+		dat.dp = dat.p;
+		dat.dv = dat.v;
 		minDom.value = dat.min;
 		maxDom.value = dat.max;
 		sminDom.innerHTML = "止损 ： ";

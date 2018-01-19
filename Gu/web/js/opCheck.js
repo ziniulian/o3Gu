@@ -83,14 +83,10 @@ var dat = {
 // console.log(o);
 		var r = document.createElement("tr");
 		var d = document.createElement("td");
-		var s;
+		var s = o.alia || o.nam;
 
 		// 名称
-		if (o.alia) {
-			d.innerHTML = o.typ ? "<a href='opOne.html?id=" + o.id + "'>" + o.alia + "</a>" : o.alia;
-		} else {
-			d.innerHTML = o.typ ? "<a href='opOne.html?id=" + o.id + "'>" + o.nam + "</a>" : o.nam;
-		}
+		d.innerHTML = o.typ ? "<a href='opOne.html?id=" + o.id + "'>" + s + "</a>" : s;
 		r.appendChild(d);
 
 		// 盈利
@@ -124,6 +120,7 @@ var dat = {
 			v = io[4]-0;
 
 			// 价
+			o.pDom.className = "";
 			if (o.op.min) {
 				s = utMath.format(o.op.min, 2) + "<br />";
 				if (p <= o.op.min) {
@@ -150,6 +147,7 @@ var dat = {
 			o.pDom.innerHTML = s;
 
 			// 量
+			o.vDom.className = "";
 			if (o.op.vmin) {
 				s = o.op.vmin + "<br />";
 				if (v < o.op.vmin) {
