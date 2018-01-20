@@ -9,7 +9,7 @@ var lzr_domain = {
 
 	getUrl: function (ids, cb) {
 		if (ids) {
-			var url = LZR.HTML.domain + "/Domain/srvGet/" + ids;
+			var url = LZR.HTML.domain + "Domain/srvGet/" + ids;
 			var ajx = new LZR.HTML.Base.Ajax ();
 			ajx.evt.rsp.add(LZR.bind(ajx, lzr_domain.hdUrl, cb));
 			ajx.get(url, true);
