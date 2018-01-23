@@ -271,6 +271,8 @@ var dat = {
 }
 
 function init() {
+	lzr_tools.getDomains("io_gu");
+
 	var r = utUrl.getRequest();
 	ajx.evt.rsp.add(dat.hdflush);
 	dat.id = r.id;
@@ -291,4 +293,6 @@ function init() {
 	};
 
 	dat.flush();
+
+	lzr_tools.trace();
 }

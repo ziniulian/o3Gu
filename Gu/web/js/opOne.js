@@ -283,4 +283,6 @@ function init() {
 	ajxP.evt.rsp.add(dat.hdgetP);
 	ajxSav.evt.rsp.add(dat.hdsav);
 	dat.get();
+
+	lzr_tools.trace();
 }

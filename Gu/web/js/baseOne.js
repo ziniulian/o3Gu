@@ -68,7 +68,7 @@ var dat = {
 		d.innerHTML = o.p[i];
 		r.appendChild(d);
 		d = document.createElement("td");
-		d.innerHTML = o.roe[i] + "%";
+		d.innerHTML = o.inc[i];
 		r.appendChild(d);
 		d = document.createElement("td");
 		d.innerHTML = o.ass[i];
@@ -80,13 +80,13 @@ var dat = {
 		d.innerHTML = utMath.formatFloat(o.ass[i] + o.pf[i] + o.up[i], 2);
 		r.appendChild(d);
 		d = document.createElement("td");
-		d.innerHTML = o.inc[i];
-		r.appendChild(d);
-		d = document.createElement("td");
 		d.innerHTML = o.pf[i];
 		r.appendChild(d);
 		d = document.createElement("td");
 		d.innerHTML = o.up[i];
+		r.appendChild(d);
+		d = document.createElement("td");
+		d.innerHTML = o.roe[i] + "%";
 		r.appendChild(d);
 		tbs.appendChild(r);
 	}
@@ -94,9 +94,13 @@ var dat = {
 }
 
 function init() {
+	lzr_tools.getDomains("io_gu");
+
 	var r = utUrl.getRequest();
 	ajx.evt.rsp.add(dat.hdget);
 	if (r.id) {
 		dat.get(r.id);
 	}
+
+	lzr_tools.trace();
 }

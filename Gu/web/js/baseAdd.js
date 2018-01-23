@@ -53,4 +53,6 @@ var dat = {
 
 function init() {
 	ajx.evt.rsp.add(dat.hdsub);
+
+	lzr_tools.trace();
 }

@@ -165,4 +165,6 @@ function init() {
 	} else {
 		dat.allId();
 	}
+
+	lzr_tools.trace();
 }

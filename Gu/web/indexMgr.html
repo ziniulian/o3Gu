@@ -12,13 +12,16 @@
 	<body>
 		<div id="boso" class="boso">
 			<div class="logo">
-				<a name="dmad_io_home" class="logohome" target="_blank"></a>
+				<a name="dmad_main" class="logohome" target="_blank"></a>
 			</div>
 			<center>
-				<br/><a target="_blank" name="dmad_io_gu_op">自选股查询</a><br/>
-				<br/><a target="_blank" name="dmad_io_gu_base">基本面查询</a><br/>
-				<br/><a target="_blank" name="dmad_io_gu_pan">盘量分析</a><br/>
-				<br/><a target="_blank" name="dmad_io_gu_rongzi">国债逆回购收益对比表</a><br/>
+				<br/><a target="_blank" href="opCheck.html?mgr=true">自选股查询</a><br/>
+				<br/><a target="_blank" href="baseCheck.html">基本面查询</a><br/>
+				<br/><a target="_blank" href="hdpan.html">盘量分析</a><br/>
+				<br/><a target="_blank" href="rongzi.html">国债逆回购收益对比表</a><br/>
+				<br/><a target="_blank" href="opMgr.html">自选股管理</a><br/>
+				<br/><a target="_blank" href="baseAdd.html">基本面新增数据</a><br/>
+				<br/><a target="_blank" href="baseFlush.html">更新基本面数据</a><br/>
 				<br/><hr />
 				<br/><a target="_blank" href="http://q.stock.sohu.com/cn/600519/cwzb.shtml">个股资产负债表查询</a><br/>
 				<br/><a target="_blank" href="http://q.stock.sohu.com/cn/dxph_jzc.shtml">净资产排行</a><br/>
@@ -31,6 +34,7 @@
 	</body>
 
 	<script type="text/javascript">
-		lzr_tools.getDomains("io_home,io_gu_op,io_gu_base,io_gu_pan,io_gu_rongzi");
+		lzr_tools.utDomTool.setProByNam("dmad_main", "href", lzr_tools.domains.main);
+		lzr_tools.trace();
 	</script>
 </html>

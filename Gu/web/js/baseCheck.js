@@ -63,11 +63,11 @@ var dat = {
 					}
 				}
 				o.p = dd.p[j];
-				o.roe = dd.roe[j];
+				o.inc = dd.inc[j];
+				o.incp = dat.calcIncp(dd.tim, dd.inc, j);
 				o.ass = dd.ass[j];
 				o.pf = dd.pf[j];
 				o.up = dd.up[j];
-				o.inc = dd.inc[j];
 				o.ta = utMath.formatFloat(o.ass - o.pf - o.up, 2);
 				o.fa = utMath.formatFloat(o.ass + o.pf + o.up, 2);
 				dat.ds.push(o);
@@ -93,7 +93,10 @@ var dat = {
 		d.innerHTML = o.p;
 		r.appendChild(d);
 		d = document.createElement("td");
-		d.innerHTML = o.roe + "%";
+		d.innerHTML = o.inc;
+		r.appendChild(d);
+		d = document.createElement("td");
+		d.innerHTML = (o.incp === -19850617) ? "---" : o.incp + "%";
 		r.appendChild(d);
 		d = document.createElement("td");
 		d.innerHTML = o.ass;
@@ -103,9 +106,6 @@ var dat = {
 		r.appendChild(d);
 		d = document.createElement("td");
 		d.innerHTML = o.fa;
-		r.appendChild(d);
-		d = document.createElement("td");
-		d.innerHTML = o.inc;
 		r.appendChild(d);
 		d = document.createElement("td");
 		d.innerHTML = o.pf;
@@ -154,10 +154,26 @@ var dat = {
 				dat.show(dat.ds[i]);
 			}
 		}
+	},
+
+	// 计算每股收益的同比值
+	calcIncp: function (tim, inc, n) {
+		var i, t, r = -19850617;
+		for (i = n + 1; i < tim.length; i++) {
+			t = tim[n] - tim[i];
+			if (t > 360 && t <370) {
+				t = (inc[n] - inc[i]) / inc[i] * 100;
+				r = utMath.formatFloat(t, 2);
+				break;
+			}
+		}
+		return r;
 	}
 }
 
 function init() {
+	lzr_tools.getDomains("io_gu");
+
 	var t = new Date();
 	var y = t.getFullYear();
 	var m = t.getMonth();
@@ -189,4 +205,6 @@ function init() {
 	ajx.evt.rsp.add(dat.hdflush);
 	ajxC.evt.rsp.add(dat.hdgetCount);
 	dat.getCount();
+
+	lzr_tools.trace();
 }

@@ -101,4 +101,6 @@ function init() {
 	ajx.evt.rsp.add(dat.hdflush);
 	ajxop.evt.rsp.add(dat.hdop);
 	dat.flush();
+
+	lzr_tools.trace();
 }

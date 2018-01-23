@@ -72,6 +72,8 @@ function flush(s, key, code, day, pay, e) {
 }
 
 function init() {
+	lzr_tools.getDomains("io_gu");
+
 	var ip = "http://hq.sinajs.cn/list=s_";
 	var head = document.getElementsByTagName("head")[0];
 	var t = new Date();
@@ -111,6 +113,8 @@ function init() {
 			Date.parse("2018/2/15"),
 			Date.parse("2018/2/16"),
 			Date.parse("2018/2/19"),
+			Date.parse("2018/2/20"),
+			Date.parse("2018/2/21"),
 
 			// 清明	1	4-5
 			Date.parse("2018/4/5"),
@@ -124,13 +128,14 @@ function init() {
 			Date.parse("2018/6/18"),
 
 			// 中秋	1
-			Date.parse("2017/10/2"),
+			Date.parse("2018/9/24"),
 
 			// 国庆	3	10-1
-			Date.parse("2017/10/3"),
-			Date.parse("2017/10/4"),
-			Date.parse("2017/10/5"),
-			Date.parse("2017/10/6"),
+			Date.parse("2018/10/1"),
+			Date.parse("2018/10/2"),
+			Date.parse("2018/10/3"),
+			Date.parse("2018/10/4"),
+			Date.parse("2018/10/5")
 		]
 	};
 	var i, s, ajx, r;
@@ -176,4 +181,6 @@ function init() {
 		ajx.onload = LZR.bind(ajx, flush, "sh", s, conf.sh[s], r.day, r.pay);
 		head.appendChild(ajx);
 	}
+
+	lzr_tools.trace();
 }

@@ -448,9 +448,9 @@ mdb.evt.get.add(function (r, req, res, next) {
 
 mdb.evt.count.add(function (r, req, res, next) {
 	if (r === 0) {
-		res.json(clsR.get(r, "", true));
+		res.json(tools.clsR.get(r, "", true));
 	} else {
-		res.json(clsR.get(r));
+		res.json(tools.clsR.get(r));
 	}
 });
 

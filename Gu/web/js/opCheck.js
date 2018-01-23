@@ -3,6 +3,7 @@
 LZR.load([
 	"LZR.Base.Json",
 	"LZR.HTML.Base.Ajax",
+	"LZR.HTML.Util.Url",
 	"LZR.Base.Math"
 ]);
 
@@ -10,10 +11,12 @@ var ajx = new LZR.HTML.Base.Ajax ();
 var ajxP = new LZR.HTML.Base.Ajax ();
 var utJson = LZR.getSingleton(LZR.Base.Json);
 var utMath = LZR.getSingleton(LZR.Base.Math);
+var utUrl = LZR.getSingleton(LZR.HTML.Util.Url);
 var dat = {
 	ds: {},
 	da: [],
 	ids: "",
+	mgr: false,		// 是否可跳转到管理页面
 
 	get: function () {
 		if (!dat.busy) {
@@ -86,7 +89,7 @@ var dat = {
 		var s = o.alia || o.nam;
 
 		// 名称
-		d.innerHTML = o.typ ? "<a href='opOne.html?id=" + o.id + "'>" + s + "</a>" : s;
+		d.innerHTML = (dat.mgr && o.typ) ? "<a href='opOne.html?id=" + o.id + "'>" + s + "</a>" : s;
 		r.appendChild(d);
 
 		// 盈利
@@ -184,6 +187,14 @@ var dat = {
 };
 
 function init() {
+	var r = utUrl.getRequest();
+	if (r.mgr) {
+		dat.mgr = true;		// 可跳转到管理页面
+		lzr_tools.utDomTool.setProByNam("dmad_io_gu", "href", "indexMgr.html");
+	} else {
+		lzr_tools.getDomains("io_gu");
+	}
+
 	ajx.evt.rsp.add(dat.hdget);
 	ajxP.evt.rsp.add(dat.hdgetP);
 
@@ -203,4 +214,6 @@ function init() {
 	};
 
 	dat.get();
+
+	lzr_tools.trace();
 }
