@@ -671,15 +671,6 @@ r.get("/srvTestFund/:id/:typ?", function (req, res, next) {
 	ajax.qry("fundamentals", req, res, next, [req.params.id]);
 });
 
-// 时间测试
-r.get("/srvTestTim/:t/:v?", function (req, res, next) {
-	if (req.params.v) {
-		res.json(tools.clsR.get(tools.utTim.parseDayTimestamp(req.params.v)));
-	} else {
-		res.json(tools.clsR.get(tools.utTim.getDayTimestamp(req.params.t)));
-	}
-});
-
 // // 初始化模板
 // r.initTmp();
 

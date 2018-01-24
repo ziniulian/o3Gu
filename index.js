@@ -3,23 +3,12 @@ require("lzr");
 
 // LZR 子模块加载
 LZR.load([
-	"LZR.Node.Srv",
-	"LZR.Node.Srv.DomainSrv"
+	"LZR.HTML",
+	"LZR.Node.Srv"
 ]);
 
 // 域名
-var dmsrv = new LZR.Node.Srv.DomainSrv ({
-	// // 获取域名后的回调
-	// hd_fun: function (r) {
-	// 	// Ajax
-	// 	ajax = new LZR.Node.Db.NodeAjax ({
-	// 		hd_sqls: {
-	// 			vs: dmsrv.ds.vs + "srvTrace/<0>/0/<1>"
-	// 		}
-	// 	});
-	// },
-	hd_ids: "vs"
-});
+var dmsrv = {ds: {main: LZR.HTML.domain}};
 
 // 服务的实例化
 var srv = new LZR.Node.Srv ({
