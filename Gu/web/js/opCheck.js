@@ -89,7 +89,7 @@ var dat = {
 		var s = o.alia || o.nam;
 
 		// 名称
-		d.innerHTML = (dat.mgr && o.typ) ? "<a href='opOne.html?id=" + o.id + "'>" + s + "</a>" : s;
+		d.innerHTML = (dat.mgr && o.typ) ? "<a target='_blank' href='opOne.html?id=" + o.id + "'>" + s + "</a>" : s;
 		r.appendChild(d);
 
 		// 盈利
