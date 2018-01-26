@@ -47,7 +47,7 @@ var dat = {
 		var r = document.createElement("tr");
 		var d = document.createElement("td");
 		if (o.typ === 1) {
-			d.innerHTML = "<a href='opOne.html?id=" + o.id + "'>" + o.id + "</a>";
+			d.innerHTML = "<a target='_blank' href='opOne.html?id=" + o.id + "'>" + o.id + "</a>";
 		} else {
 			d.innerHTML = "<a>" + o.id + "</a>";
 		}

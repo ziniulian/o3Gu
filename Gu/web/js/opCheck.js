@@ -125,7 +125,7 @@ var dat = {
 			// 价
 			o.pDom.className = "";
 			if (o.op.min) {
-				s = utMath.format(o.op.min, 2) + "<br />";
+				s = utMath.format(o.op.min + 0.02, 2) + "<br />";
 				if (p <= o.op.min) {
 					o.pDom.className = "clrErr";
 				}
