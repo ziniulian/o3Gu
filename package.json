@@ -1,12 +1,12 @@
 {
 	"name": "LZRgu",
-	"version": "0.0.0",
+	"version": "1.0.0",
 	"main": "index.js",
 	"dependencies": {
 		"express": "4.x",
 		"mongodb": "2.2.x",
 		"iconv-lite": "0.4.x",
-		"lzr": "0.x"
+		"lzr": "~1.1.1"
 	},
 	"devDependencies": {},
 	"scripts": {
