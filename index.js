@@ -34,6 +34,11 @@ srv.ro.get("/tools.js", function (req, res) {
 	res.redirect(dmsrv.ds.main + "js/tools.js");
 });
 
+// 返回服务名
+srv.ro.get("/myNam/", function (req, res) {
+	res.send("Gu");
+});
+
 // 股
 srv.use("/Gu/", require("./Gu"));
 
