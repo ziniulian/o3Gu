@@ -6,7 +6,7 @@
 		"express": "4.x",
 		"mongodb": "2.2.x",
 		"iconv-lite": "0.4.x",
-		"lzr": "~1.1.1"
+		"lzr": "~1.2.0"
 	},
 	"devDependencies": {},
 	"scripts": {
