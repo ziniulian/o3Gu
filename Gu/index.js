@@ -11,7 +11,7 @@ LZR.load([
 	"LZR.Node.Srv.Result"
 ]);
 
-// 需要用到的根据函数
+// 需要用到的工具函数
 var tools = {
 	utTim: LZR.getSingleton(LZR.Base.Time),
 	clsR: LZR.Node.Srv.Result,
